@@ -78,7 +78,26 @@ reginput.addEventListener('click', () => {
     hideAuthPopup();
 });
 
+//---CREATION DE MATCH---
+const createMatchBtn = document.getElementById('createMatchBtn');
+createMatchBtn.addEventListener('click', () => {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        alert('Veuillez vous connecter pour créer un match.');
+        return;
+    }
 
+    fetch('/create-match', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ userId: userId })
+    }).then(response => response.json())
+        .then(data => {
+            alert('Match créé avec l\'ID : ' + data.matchId);
+        });
+});
 
 // --- DÉCONNEXION ---
 const logoutBtn = document.getElementById('logoutBtn');

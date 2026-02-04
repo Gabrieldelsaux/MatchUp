@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql2');
 const connection = mysql.createConnection({
-  host: '172.29.18.127',
+  host: '192.168.1.22',
   user: 'matchUp',
   password: 'matchUp',
   database: 'matchUp'
