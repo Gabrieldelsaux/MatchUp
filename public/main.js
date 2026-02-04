@@ -81,8 +81,9 @@ reginput.addEventListener('click', () => {
 
 
 // --- DÉCONNEXION ---
-document.getElementById('logoutBtn').addEventListener('click', function() {
-    localStorage.removeItem('user');
+const logoutBtn = document.getElementById('logoutBtn');
+logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('userId');
     showAuthPopup();
 });
 
