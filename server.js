@@ -85,7 +85,7 @@ app.post('/connexion', (req, res) => {
 app.post('/createMatch', (req, res) => {
   connection.query(
     'INSERT INTO match (id_j1, id_j2,categorie) VALUES (?,?,?)',
-    [req.body.player1_id, req.body.player2_id, req.body.score1, req.body.score2],
+    [req.body.player1_id, req.body.player2_id, req.body.categorie],
     (err, results) => {
       if (err) {
         console.error('Erreur lors de l\'insertion du match dans la base de données :', err);
