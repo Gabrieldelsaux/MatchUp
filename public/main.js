@@ -138,96 +138,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 7. CRÉATION DE MATCH
-    const createMatchForm = document.getElementById('createMatchForm');
-    if (createMatchForm) {
-        createMatchForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const p1 = localStorage.getItem('userId');
-            const p2 = document.getElementById('userlist').value;
-            const game = document.getElementById('gameSelect').value;
-
-            if (!p2) return alert("Veuillez choisir un adversaire !");
-
-            fetch('/createMatch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ player1_id: p1, player2_id: p2, categorie: game })
-            })
-            .then(res => res.json())
-            .then(data => {
-                alert("Invitation envoyée !");
-                document.getElementById('popupMatch').style.display = 'none';
-            })
-            .catch(err => console.error("Erreur match:", err));
-        });
-    }
-    invitationHandler();
 });
 
-function loadUsersList(currentUserId) {
-    fetch('/users')
-        .then(res => res.json())
-        .then(users => {
-            const select = document.getElementById('userlist');
-            if (!select) return;
-            select.innerHTML = '<option value="">-- Sélectionnez un adversaire --</option>';
-            users.forEach(u => {
-                if (u.id != currentUserId) {
-                    const opt = document.createElement('option');
-                    opt.value = u.id;
-                    opt.text = u.login;
-                    select.appendChild(opt);
-                }
-            });
-        });
-}
-
-//---CREATION FONCTION POUR RECEVOIR LES INVITATIONS---
-function invitationHandler() {
-    console.log("Recherche des invitations...");
-    
-    fetch('/invitation') 
-    .then(res => res.json())
-    .then(matchs => {
-        console.log("Données reçues :", matchs); // Vérifie ici dans ta console F12
-        
-        const receivedList = document.getElementById('received-invites');
-        const sentList = document.getElementById('sent-invites');
-        const currentUserId = localStorage.getItem('userId');
-
-        if(!currentUserId) return console.error("Pas de userId dans le localStorage");
-
-        receivedList.innerHTML = '';
-        sentList.innerHTML = '';
-
-        matchs.forEach(match => {
-            // Vérifie bien l'orthographe 'statut' (avec un T)
-            if (match.statut === 'en attente') {
-                
-                // CAS : Reçu (Je suis id_j2)
-                if (match.id_j2 == currentUserId) {
-                    addInvitation(receivedList, {
-                        id: match.id,
-                        playerName: "Joueur " + match.id_j1, 
-                        gameType: match.categorie
-                    }, true);
-                }
-
-                // CAS : Envoyé (Je suis id_j1)
-                if (match.id_j1 == currentUserId) {
-                    addInvitation(sentList, {
-                        id: match.id,
-                        playerName: "Joueur " + match.id_j2,
-                        gameType: match.categorie
-                    }, false);
-                }
-            }
-        });
+//--- Création de match ---
+document.getElementById('createMatchForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const player1_id = localStorage.getItem('userId');
+    const player2_id = document.getElementById('opponentSelect').value;
+    const categorie = document.getElementById('gameSelect').value;
+    if (player1_id) {
+        alert(`Création du match contre l'utilisateur ${player2_id} pour le jeu ${categorie}`);
+        action = "createMatch";
+    } else {
+        alert("Action impossible : veuillez vous connecter.");
+        window.showAuthPopup();
+        return;
+    }
+    if (!player1_id) {
+        alert("veuillez sélectionner un adversaire et une catégorie.");
+        return;
+    }
+     fetch('/createMatch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ player1_id, player2_id, categorie })
     })
-    .catch(err => console.error("Erreur Fetch :", err));
-}
-
-// Lancement automatique
-document.addEventListener('DOMContentLoaded', invitationHandler);
-document.addEventListener('DOMContentLoaded', invitationHandler);
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message || "Match créé !");
+        window.hideCreateMatchPopup();
+        location.reload();
+    })
+    .catch(err => console.error("Erreur création match:", err));
+});
