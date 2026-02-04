@@ -7,18 +7,16 @@
 </head>
 
 <body>
-    <h1>Bienvenue sur la page d'accueil</h1>
-    <input type="text" id="monInput">
-    <input type="text" id="monInput3">
-    <input type="button" value="Login" id="monBouton">
-    <input type="button" value="Cliquez moi encore!" id="monBouton2">
-    <select id="vote"> </select>
-    <input type="button" value="Voter" id="voter">
-    <div  id ="monImput5">
-        <table id ="resultat">
-            
-        </table>
-    </div>
+    <h1>Connexion</h1>
+    <form id="loginForm">
+        <label for="username">Nom d'utilisateur:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Mot de passe:</label>
+        <input type="password" id="password" name="password" required><br><br>
+        <input type="submit" value="Se connecter" id="login">
+        <input type="submit" value="S'inscrire" id="register">
+    </form>
+
 </body>
 <script src="main.js"></script>
 </html>
