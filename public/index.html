@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchUp - Plateforme de Jeux Compétitifs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Clash+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">MatchUp</div>
+        <ul class="nav-links">
+            <li><a href="#games">Jeux</a></li>
+            <li><a href="#leaderboard">Classement</a></li>
+            <li><a href="#how-it-works">Comment ça marche</a></li>
+        </ul>
+        <button class="nav-cta" id="logoutBtn" style="display: none;">Déconnexion</button>
+    </nav>
+
+    <section class="hero">
+        <div class="bg-shape shape-1"></div>
+        <div class="bg-shape shape-2"></div>
+        
+        <div class="hero-content">
+            <h1>
+                Défiez les meilleurs<br>
+                <span class="gradient-text">joueurs du monde</span>
+            </h1>
+            <p>
+                Lancez des défis, jouez en ligne, et grimpez dans le classement. 
+                Échecs, dames, billard, et bien plus encore vous attendent.
+            </p>
+            <div class="cta-buttons">
+                <button class="btn-primary" onclick="showAuthPopup()">Commencer à jouer</button>
+                <button class="btn-secondary">Voir les classements</button>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="floating-card card-1">
+                <div class="match-info">
+                    <div class="player-mini"><div class="avatar-mini"></div><span>Marie L.</span></div>
+                    <div class="vs">VS</div>
+                    <div class="player-mini"><div class="avatar-mini"></div><span>Alex M.</span></div>
+                </div>
+                <div class="game-badge">♟️ Échecs</div>
+            </div>
+            </div>
+    </section>
+
+    <section class="features" id="games">
+        <h2 class="section-title">Catégories de <span class="gradient-text">jeux</span></h2>
+        <div class="features-grid">
+            <div class="feature-card game-card">
+                <div class="feature-icon">♟️</div>
+                <h3>Échecs</h3>
+                <p>Le jeu de stratégie classique.</p>
+                <div class="game-stats"><span>👥 12,543 joueurs</span></div>
+            </div>
+            </div>
+    </section>
+
+    <div id="authOverlay">
+        <div id="authPopup">
+            <h2>Rejoignez MatchUp</h2>
+            
+            <div id="authTabs">
+                <button class="tab-btn active" data-tab="login">Connexion</button>
+                <button class="tab-btn" data-tab="register">Inscription</button>
+            </div>
+
+            <form id="loginForm" class="auth-form active">
+                <div>
+                    <label for="login-username">Nom d'utilisateur</label>
+                    <input type="text" id="login-username" required placeholder="Votre pseudo">
+                </div>
+                <div>
+                    <label for="login-password">Mot de passe</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+                <button type="submit">Se connecter</button>
+            </form>
+
+            <form id="registerForm" class="auth-form">
+                <div>
+                    <label for="register-username">Nom d'utilisateur</label>
+                    <input type="text" id="register-username" required placeholder="Choisissez un pseudo">
+                </div>
+                <div>
+                    <label for="register-password">Mot de passe</label>
+                    <input type="password" id="register-password" required placeholder="••••••••">
+                </div>
+                <button type="submit">Créer mon compte</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
