@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql2');
 const connection = mysql.createConnection({
-  host: '172.29.18.127',
+  host: '172.29.18.112',
   user: 'matchUp',
   password: 'matchUp',
   database: 'matchUp'
@@ -64,7 +64,7 @@ app.post('/connexion', (req, res) => {
   console.log(req.body);
   //on récupère le login et le password
   const { login, password } = req.body;
-  connection.query('SELECT * FROM User WHERE login = ? AND password = ?', [login, password], (err, results) => {
+  connection.query('SELECT * FROM users WHERE login = ? AND password = ?', [login, password], (err, results) => {
     if (err) {
       console.error('Erreur lors de la vérification des identifiants :', err);
       res.status(500).json({ message: 'Erreur serveur' });
@@ -82,8 +82,18 @@ app.post('/connexion', (req, res) => {
 
 
 //MATCH ET INVITATION
-
-
+app.post('/createMatch', (req, res) => {
+  connection.query(
+    'INSERT INTO match (player1_id, player2_id, score1, score2) VALUES (?,?,?,?)',
+    [req.body.player1_id, req.body.player2_id, req.body.score1, req.body.score2],
+    (err, results) => {
+      if (err) {
+        console.error('Erreur lors de l\'insertion du match dans la base de données :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
+    }
+  )});
 
 
 
