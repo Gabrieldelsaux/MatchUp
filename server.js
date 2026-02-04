@@ -84,7 +84,7 @@ app.post('/connexion', (req, res) => {
 //MATCH ET INVITATION
 app.post('/createMatch', (req, res) => {
   connection.query(
-    'INSERT INTO match (player1_id, player2_id, score1, score2) VALUES (?,?,?,?)',
+    'INSERT INTO match (id_j1, id_j2,categorie) VALUES (?,?,?)',
     [req.body.player1_id, req.body.player2_id, req.body.score1, req.body.score2],
     (err, results) => {
       if (err) {
