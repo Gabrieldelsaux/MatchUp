@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql2');
 const connection = mysql.createConnection({
-  host: '192.168.1.22',
+  host: '172.29.18.122',
   user: 'matchUp',
   password: 'matchUp',
   database: 'matchUp'
@@ -22,10 +22,10 @@ app.use(express.json());
 //-----------------------------------------------------ROUTES----------------------------------------------------//
 //CONNEXION ET USER
 app.post('/register', (req, res) => {
-
+  const { loginValue, passwordValue } = req.body;
   connection.query(
     'INSERT INTO users (login, password) VALUES (?,?)',
-    [req.body.loginValue, req.body.passwordValue],
+    [loginValue, passwordValue],
     (err, results) => {
       if (err) {
         console.error('Erreur lors de l\'insertion dans la base de données :', err);
@@ -47,17 +47,6 @@ app.get('/users', (req, res) => {
     }
     res.json(results);
   });
-});
-app.get('/stats', (req, res) => {
-  connection.query('SELECT nb_victoire , nb_defaite FROM users', (err, results) => {
-    if (err) {
-      console.error('Erreur lors de la récupération des statistiques :', err);
-      res.status(500).json({ message: 'Erreur serveur' });
-      return;
-    }
-    res.json(results);
-  }
-  )
 });
 
 app.post('/connexion', (req, res) => {
@@ -83,9 +72,10 @@ app.post('/connexion', (req, res) => {
 
 //MATCH ET INVITATION
 app.post('/createMatch', (req, res) => {
+  const { player1_id, player2_id, categorie } = req.body;
   connection.query(
-    'INSERT INTO match (id_j1, id_j2,categorie) VALUES (?,?,?)',
-    [req.body.player1_id, req.body.player2_id, req.body.categorie],
+    'INSERT INTO matchs (id_j1, id_j2,categorie) VALUES (?,?,?)',
+    [player1_id, player2_id, categorie],
     (err, results) => {
       if (err) {
         console.error('Erreur lors de l\'insertion du match dans la base de données :', err);
@@ -93,8 +83,24 @@ app.post('/createMatch', (req, res) => {
         return;
       }
     }
-  )});
+  )
+});
 
+app.post('/finishMatch', (req, res) => {
+  const {id_j1, id_j2, score_j1, score_j2,gagnant,id_match} = req.body;
+  connection.query(
+    'UPDATE matchs SET score_j1 = ?, score_j2 = ?, gagnant = ?, status = "termine" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
+    [score_j1, score_j2, gagnant, id_j1, id_j2, id_match],
+    (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la mise à jour du match dans la base de données :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
+      res.json({ message: 'Match terminé avec succès !' });
+    }
+  )
+});
 
 
 app.listen(3000, () => {
