@@ -147,7 +147,47 @@ if (createMatchForm) {
             .catch(err => console.error(err));
     });
 }
-    
+
+// Affiche ou cache la zone de saisie sous le match
+function toggleResultZone(id_match) {
+    const zone = document.getElementById(`input-zone-${id_match}`);
+    zone.style.display = zone.style.display === 'none' ? 'block' : 'none';
+}
+
+// Envoie les données au serveur
+function submitMatch(id_match, id_j1, id_j2) {
+    const score_j1 = document.getElementById(`sc1-${id_match}`).value;
+    const score_j2 = document.getElementById(`sc2-${id_match}`).value;
+
+    if (score_j1 === "" || score_j2 === "") {
+        alert("Veuillez remplir les deux scores !");
+        return;
+    }
+
+    // Calcul du gagnant
+    let gagnant = null;
+    if (parseInt(score_j1) > parseInt(score_j2)) gagnant = id_j1;
+    else if (parseInt(score_j2) > parseInt(score_j1)) gagnant = id_j2;
+
+    fetch('/finishMatch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            id_match, 
+            id_j1, 
+            id_j2, 
+            score_j1, 
+            score_j2, 
+            gagnant 
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        location.reload(); // Rafraîchit pour mettre à jour l'affichage
+    })
+    .catch(err => console.error(err));
+}
 // --- DÉCONNEXION ---
 const logoutBtn = document.getElementById('logoutBtn');
 if (logoutBtn) {

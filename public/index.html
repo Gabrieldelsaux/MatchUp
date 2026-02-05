@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MatchUp - Plateforme de Jeux Compétitifs</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Clash+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Clash+Display:wght@600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="main.css">
 </head>
+
 <body>
     <nav>
         <div class="logo">MatchUp</div>
@@ -21,14 +25,14 @@
     <section class="hero">
         <div class="bg-shape shape-1"></div>
         <div class="bg-shape shape-2"></div>
-        
+
         <div class="hero-content">
             <h1>
                 Défiez les meilleurs<br>
                 <span class="gradient-text">joueurs du monde</span>
             </h1>
             <p>
-                Lancez des défis, jouez en ligne, et grimpez dans le classement. 
+                Lancez des défis, jouez en ligne, et grimpez dans le classement.
                 Échecs, dames, billard, et bien plus encore vous attendent.
             </p>
             <div class="cta-buttons">
@@ -40,13 +44,17 @@
         <div class="hero-visual">
             <div class="floating-card card-1">
                 <div class="match-info">
-                    <div class="player-mini"><div class="avatar-mini"></div><span>Marie L.</span></div>
+                    <div class="player-mini">
+                        <div class="avatar-mini"></div><span>Marie L.</span>
+                    </div>
                     <div class="vs">VS</div>
-                    <div class="player-mini"><div class="avatar-mini"></div><span>Alex M.</span></div>
+                    <div class="player-mini">
+                        <div class="avatar-mini"></div><span>Alex M.</span>
+                    </div>
                 </div>
                 <div class="game-badge">♟️ Échecs</div>
             </div>
-            </div>
+        </div>
     </section>
 
     <section class="features" id="games">
@@ -71,20 +79,21 @@
                     <button type="submit" class="btnCreateMatch">Lancer le défi</button>
                 </form>
             </div>
-        <div class="features-grid">
-            <div class="feature-card game-card">
-                <div class="feature-icon">♟️</div>
-                <h3>Échecs</h3>
-                <p>Le jeu de stratégie classique.</p>
-                <div class="game-stats"><span>👥 12,543 joueurs</span></div>
-            </div>
+            <div class="features-grid">
+                <div class="feature-card game-card">
+                    <div class="feature-icon">♟️</div>
+                    <h3>Échecs</h3>
+                    <p>Le jeu de stratégie classique.</p>
+                    <div class="game-stats"><span>👥 12,543 joueurs</span></div>
+                </div>
             </div>
     </section>
+
 
     <div id="authOverlay">
         <div id="authPopup">
             <h2>Rejoignez MatchUp</h2>
-            
+
             <div id="authTabs">
                 <button class="tab-btn active" data-tab="login">Connexion</button>
                 <button class="tab-btn" data-tab="register">Inscription</button>
@@ -115,7 +124,22 @@
             </form>
         </div>
     </div>
+    <div class="match-card" id="match-{{id_match}}">
+        <p>Joueur 1 VS Joueur 2</p>
+
+        <button onclick="toggleResultZone('{{id_match}}')">Saisir le score</button>
+
+        <div id="input-zone-{{id_match}}" style="display:none; margin-top:10px; padding:10px; border:1px solid #ccc;">
+            <input type="number" id="sc1-{{id_match}}" placeholder="Score J1" style="width:60px">
+            <span> - </span>
+            <input type="number" id="sc2-{{id_match}}" placeholder="Score J2" style="width:60px">
+
+            <button onclick="submitMatch('{{id_match}}', '{{id_j1}}', '{{id_j2}}')">✔</button>
+            <button onclick="toggleResultZone('{{id_match}}')">✖</button>
+        </div>
+    </div>
 
     <script src="main.js"></script>
 </body>
+
 </html>
