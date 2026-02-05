@@ -90,7 +90,6 @@ if (reginput) {
     });
 }
 
-//---RECUPERATION DE TOUT LES USERS POUR LA CREATION DE MATCH POUR AFFICHER LEUR LOGIN DANS LA LISTE DEROULANTE---
 //---RECUPERATION DE TOUT LES USERS---
 window.onload = () => {
     fetch('/users')
@@ -126,30 +125,29 @@ function hideCreateMatchPopup() {
     }
 }
 
-//---CREATION DE MATCH AVEC LE BOUTON DE LA POPUP---
-const createMatchBtn = document.getElementById('createMatchBtn');
-if (createMatchBtn) {
-    createMatchBtn.addEventListener('click', () => {
-        const userSelect = document.getElementById('userSelect');
-        const selectedUserId = userSelect ? userSelect.value : null;
-        if (selectedUserId) {
-            fetch('/create-match', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ opponentId: selectedUserId })
-            }).then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    hideCreateMatchPopup();
-                })
-                .catch(err => console.error(err));
-        } else {
-            alert('Veuillez sélectionner un adversaire.');
-        }
+//---CREATION DE MATCH AVEC LA POPUP QUI S'OUVRE---
+const createMatchForm = document.getElementById('createMatchForm');
+if (createMatchForm) {
+    createMatchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const player1_id = localStorage.getItem('userId');
+        const player2_id = document.getElementById('userlist').value;
+        const categorie = document.getElementById('gameSelect').value;
+        fetch('/createMatch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ player1_id, player2_id, categorie })
+        }).then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                hideCreateMatchPopup();
+            })
+            .catch(err => console.error(err));
     });
 }
+    
 // --- DÉCONNEXION ---
 const logoutBtn = document.getElementById('logoutBtn');
 if (logoutBtn) {

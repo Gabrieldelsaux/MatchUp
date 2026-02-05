@@ -3,11 +3,7 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql2');
 const connection = mysql.createConnection({
-<<<<<<< HEAD
   host: '172.29.18.127',
-=======
-  host: '172.29.18.112',
->>>>>>> 0a909ff (fixe de la route match)
   user: 'matchUp',
   password: 'matchUp',
   database: 'matchUp'
