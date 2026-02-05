@@ -5,9 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MatchUp - Plateforme de Jeux Compétitifs</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Clash+Display:wght@600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Clash+Display:wght@600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="main.css">
 </head>
 
@@ -60,52 +58,43 @@
     </section>
 
     <section class="features" id="games">
-        <div id="popupCreateMatch" class="popup">
-            <div class="popup-content">
-                <span class="close-btn" id="closeCreateMatch">&times;</span>
-                <h2>Créer un nouveau match</h2>
+        <div class="section-title">Nos Jeux</div>
+        
+        <div class="features-grid">
+            <div class="feature-card game-card" onclick="showCreateMatchPopup()">
+                <div class="feature-icon">♟️</div>
+                <h3>Échecs</h3>
+                <p>Le jeu de stratégie classique.</p>
+                <div class="game-stats"><span>👥 12,543 joueurs</span></div>
+            </div>
+        </div>
+
+        <div id="popupMatch" class="overlay" style="display: none;">
+            <div class="popup-card">
+                <h3>Nouveau Défi</h3>
                 <form id="createMatchForm">
-                    <label for="gameSelect">Choisissez un jeu :</label>
-                    <select id="gameSelect" required>
-                        <option value="">--Sélectionnez un jeu--</option>
-                        <option value="chess">Échecs</option>
-                    </select>
+                    <div style="margin-bottom: 15px; text-align: left;">
+                        <label for="gameSelect">Choisissez un jeu :</label>
+                        <select id="gameSelect" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                            <option value="chess">♟️ Échecs</option>
+                        </select>
+                    </div>
 
-
-                    <label for="opponentSelect">Choisissez un adversaire :</label>
-                    <select id="userlist" required>
-                        <option value="">--Sélectionnez un adversaire--</option>
-                    </select>
+                    <div style="margin-bottom: 20px; text-align: left;">
+                        <label for="userlist">Choisissez un adversaire :</label>
+                        <select id="userlist" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                            <option value="">-- Sélectionnez un adversaire --</option>
+                            </select>
+                    </div>
 
                     <button type="submit" class="btnCreateMatch">Lancer le défi</button>
+                    <button type="button" class="btnClose" onclick="document.getElementById('popupMatch').style.display='none'">Annuler</button>
                 </form>
             </div>
-            <div id="popupMatch" class="overlay">
-    <div class="popup-card">
-        <h3>Nouveau Défi</h3>
-        
-        <label for="userlist">Choisissez un adversaire :</label>
-        <select id="userlist" required>
-            <option value="">--Sélectionnez un adversaire--</option>
-        </select>
-
-        <button type="submit" class="btnCreateMatch">Lancer le défi</button>
-        
-        <button type="button" class="btnClose" onclick="document.getElementById('popupMatch').style.display='none'">Annuler</button>
-    </div>
-</div>
-            <div class="features-grid">
-                <div class="feature-card game-card">
-                    <div class="feature-icon">♟️</div>
-                    <h3>Échecs</h3>
-                    <p>Le jeu de stratégie classique.</p>
-                    <div class="game-stats"><span>👥 12,543 joueurs</span></div>
-                </div>
-            </div>
+        </div>
     </section>
 
-
-    <div id="authOverlay">
+    <div id="authOverlay" style="display: none;">
         <div id="authPopup">
             <h2>Rejoignez MatchUp</h2>
 
@@ -139,24 +128,8 @@
             </form>
         </div>
     </div>
-    <div class="match-card" id="match-{{id_match}}">
-        <p>Joueur 1 VS Joueur 2</p>
 
-        <button onclick="toggleResultZone('{{id_match}}')">Saisir le score</button>
 
-        <div id="input-zone-{{id_match}}" style="display:none; margin-top:10px; padding:10px; border:1px solid #ccc;">
-            <select id="result">
-                <option value="">--Sélectionnez le résultat--</option>
-                <option value="1-0">Joueur 1 gagne</option>
-                <option value="0-1">Joueur 2 gagne</option>
-            </select>
-
-            <button onclick="submitMatch('{{id_match}}', '{{id_j1}}', '{{id_j2}}')">✔</button>
-            <button onclick="toggleResultZone('{{id_match}}')">✖</button>
-        </div>
-    </div>
-
-    <script src="main.js"></script>
 </body>
-
+<script src="main.js"></script>
 </html>
