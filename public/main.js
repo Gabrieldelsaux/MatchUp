@@ -112,14 +112,14 @@ window.onload = () => {
 };
 //---CREATION DE POPUP QUAND ON APPUIE SUR CREER UN MATCH---
 function showCreateMatchPopup() {
-    const popup = document.getElementById('createMatchPopup');
+    const popup = document.getElementById('popupMatch');
     if (popup) {
         popup.style.display = 'block';
     }
 }
 
 function hideCreateMatchPopup() {
-    const popup = document.getElementById('createMatchPopup');
+    const popup = document.getElementById('popupMatch');
     if (popup) {
         popup.style.display = 'none';
     }

@@ -1,0 +1,130 @@
+:root {
+    --primary: #435B7B;
+    --secondary: #7C90AD;
+    --accent: #E6E7E4;
+    --dark: #0D1B2B;
+    --medium-dark: #1C263D;
+    --light: #E6E7E4;
+    --text: #1C263D;
+    --gradient: linear-gradient(135deg, #435B7B 0%, #7C90AD 100%);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background: #F5F5F3;
+    color: var(--text);
+    padding-top: 120px;
+}
+
+/* --- NAVIGATION & FOOTER (REPRIS DE TON INDEX) --- */
+nav {
+    position: fixed; top: 0; width: 100%; padding: 20px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 1000; background: rgba(230, 231, 228, 0.9);
+    backdrop-filter: blur(10px); border-bottom: 1px solid rgba(28, 38, 61, 0.1);
+}
+
+.logo {
+    font-family: 'Clash Display', sans-serif; font-size: 32px; font-weight: 700;
+    background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.nav-links { display: flex; gap: 40px; list-style: none; }
+.nav-links a { text-decoration: none; color: var(--text); font-weight: 500; transition: 0.3s; }
+.nav-links a.active { color: var(--primary); font-weight: 700; }
+
+.nav-cta {
+    padding: 12px 28px; background: var(--gradient); color: white; border: none;
+    border-radius: 50px; font-weight: 600; cursor: pointer;
+}
+
+/* --- LAYOUT --- */
+.matchs-container { max-width: 1200px; margin: 0 auto; padding: 0 40px 60px; }
+
+.section-header { text-align: center; margin-bottom: 50px; }
+.gradient-text {
+    font-family: 'Clash Display', sans-serif; font-size: 48px;
+    background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.matchs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 40px;
+    align-items: start;
+}
+
+.column-title {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 22px; margin-bottom: 20px; color: var(--medium-dark);
+}
+
+/* --- CARDS & ITEMS --- */
+.glass-card {
+    background: white;
+    border-radius: 24px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(13, 27, 43, 0.05);
+    border: 1px solid rgba(28, 38, 61, 0.05);
+}
+
+.match-item {
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+}
+
+.match-item:hover { transform: scale(1.02); }
+
+.match-main { display: flex; justify-content: space-between; align-items: center; }
+
+.player-info { display: flex; align-items: center; gap: 15px; }
+
+.avatar-mini {
+    width: 45px; height: 45px; border-radius: 50%;
+    background: var(--gradient);
+}
+
+.player-name { display: block; font-weight: 700; color: var(--dark); }
+.game-type { font-size: 13px; color: var(--secondary); }
+
+/* --- ACTIONS & BADGES --- */
+.match-actions { display: flex; gap: 10px; }
+
+.btn-icon {
+    width: 35px; height: 35px; border-radius: 10px; border: none;
+    cursor: pointer; font-weight: bold; transition: 0.3s;
+}
+
+.accept { background: #28a745; color: white; }
+.decline { background: var(--light); color: var(--primary); }
+
+.status-tag {
+    font-size: 12px; font-weight: 600; padding: 5px 12px;
+    background: var(--light); border-radius: 50px; color: var(--primary);
+}
+
+/* --- TABLE HISTORIQUE --- */
+.history-table { width: 100%; border-collapse: collapse; }
+.history-table th { 
+    text-align: left; padding-bottom: 15px; 
+    color: var(--secondary); font-size: 14px; 
+}
+.history-table td { padding: 15px 0; border-top: 1px solid #f0f0f0; }
+
+.badge {
+    padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700;
+}
+.win { background: rgba(40, 167, 69, 0.1); color: #28a745; }
+.loss { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+
+.score-cell { font-weight: 800; color: var(--dark); font-family: 'Clash Display', sans-serif; }
+
+footer {
+    background: var(--dark); color: white; padding: 40px; text-align: center;
+}
+
+@media (max-width: 900px) {
+    .matchs-grid { grid-template-columns: 1fr; }
+}

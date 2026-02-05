@@ -3,11 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MatchUp - Plateforme de Jeux Compétitifs</title>
+    <title>Mes Matchs - MatchUp</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Clash+Display:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="matchs.css">
 </head>
 <body>
-    <h1>Matchs en Cours</h1>
+    <nav>
+        <div class="logo">MatchUp</div>
+        <ul class="nav-links">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="index.html#games">Jeux</a></li>
+            <li><a href="matchs.html" class="active">Matchs</a></li>
+        </ul>
+        <button class="nav-cta">Mon Profil</button>
+    </nav>
+
+    <div class="matchs-container">
+        <header class="section-header">
+            <h1 class="gradient-text">Centre de Compétition</h1>
+            <p>Gérez vos défis et consultez vos performances passées.</p>
+        </header>
+
+        <div class="matchs-grid">
+            <div class="match-column">
+                <h2 class="column-title">📥 Invitations Reçues</h2>
+                <div class="match-list" id="received-invites">
+                    <div class="glass-card match-item">
+                        <div class="match-main">
+                            <div class="player-info">
+                                <div class="avatar-mini"></div>
+                                <div>
+                                    <span class="player-name">DarkKnight_92</span>
+                                    <span class="game-type">Défis aux Échecs</span>
+                                </div>
+                            </div>
+                            <div class="match-actions">
+                                <button class="btn-icon accept">✔</button>
+                                <button class="btn-icon decline">✖</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="column-title" style="margin-top: 40px;">📤 Défis Envoyés</h2>
+                <div class="match-list" id="sent-invites">
+                    <div class="glass-card match-item sent">
+                        <div class="match-main">
+                            <div class="player-info">
+                                <div class="avatar-mini secondary"></div>
+                                <div>
+                                    <span class="player-name">ProGamer_X</span>
+                                    <span class="game-type">En attente de réponse...</span>
+                                </div>
+                            </div>
+                            <div class="status-tag">Pending</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="match-column">
+                <h2 class="column-title">📜 Historique des Matchs</h2>
+                <div class="glass-card history-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Adversaire</th>
+                                <th>Résultat</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="player-mini"><div class="avatar-xs"></div> Marie L.</div></td>
+                                <td><span class="badge win">Victoire</span></td>
+                                <td class="score-cell">1 - 0</td>
+                            </tr>
+                            <tr>
+                                <td><div class="player-mini"><div class="avatar-xs"></div> Alex M.</div></td>
+                                <td><span class="badge loss">Défaite</span></td>
+                                <td class="score-cell">0 - 1</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-bottom">
+            &copy; 2026 MatchUp. Le terrain de jeu des champions.
+        </div>
+    </footer>
+    <script src="main.js"></script>
 </body>
 </html>

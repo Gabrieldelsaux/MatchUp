@@ -15,6 +15,7 @@
     <nav>
         <div class="logo">MatchUp</div>
         <ul class="nav-links">
+            <li><a href="/matchs">Matchs</a></li>
             <li><a href="#games">Jeux</a></li>
             <li><a href="#leaderboard">Classement</a></li>
             <li><a href="#how-it-works">Comment ça marche</a></li>
@@ -67,9 +68,8 @@
                     <select id="gameSelect" required>
                         <option value="">--Sélectionnez un jeu--</option>
                         <option value="chess">Échecs</option>
-                        <option value="checkers">Dames</option>
-                        <option value="pool">Billard</option>
                     </select>
+
 
                     <label for="opponentSelect">Choisissez un adversaire :</label>
                     <select id="userlist" required>
@@ -79,6 +79,20 @@
                     <button type="submit" class="btnCreateMatch">Lancer le défi</button>
                 </form>
             </div>
+            <div id="popupMatch" class="overlay">
+    <div class="popup-card">
+        <h3>Nouveau Défi</h3>
+        
+        <label for="userlist">Choisissez un adversaire :</label>
+        <select id="userlist" required>
+            <option value="">--Sélectionnez un adversaire--</option>
+        </select>
+
+        <button type="submit" class="btnCreateMatch">Lancer le défi</button>
+        
+        <button type="button" class="btnClose" onclick="document.getElementById('popupMatch').style.display='none'">Annuler</button>
+    </div>
+</div>
             <div class="features-grid">
                 <div class="feature-card game-card">
                     <div class="feature-icon">♟️</div>
@@ -130,9 +144,11 @@
         <button onclick="toggleResultZone('{{id_match}}')">Saisir le score</button>
 
         <div id="input-zone-{{id_match}}" style="display:none; margin-top:10px; padding:10px; border:1px solid #ccc;">
-            <input type="number" id="sc1-{{id_match}}" placeholder="Score J1" style="width:60px">
-            <span> - </span>
-            <input type="number" id="sc2-{{id_match}}" placeholder="Score J2" style="width:60px">
+            <select id="result">
+                <option value="">--Sélectionnez le résultat--</option>
+                <option value="1-0">Joueur 1 gagne</option>
+                <option value="0-1">Joueur 2 gagne</option>
+            </select>
 
             <button onclick="submitMatch('{{id_match}}', '{{id_j1}}', '{{id_j2}}')">✔</button>
             <button onclick="toggleResultZone('{{id_match}}')">✖</button>
