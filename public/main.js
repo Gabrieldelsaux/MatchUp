@@ -110,22 +110,8 @@ window.onload = () => {
         })
         .catch(err => console.error("Erreur lors de la récup des users:", err));
 };
-//---CREATION DE POPUP QUAND ON APPUIE SUR CREER UN MATCH---
-function showCreateMatchPopup() {
-    const popup = document.getElementById('popupMatch');
-    if (popup) {
-        popup.style.display = 'block';
-    }
-}
 
-function hideCreateMatchPopup() {
-    const popup = document.getElementById('popupMatch');
-    if (popup) {
-        popup.style.display = 'none';
-    }
-}
-
-//---CREATION DE MATCH AVEC LA POPUP QUI S'OUVRE---
+//---CREER MATCH ET INVITATION DANS LA PAGE MATCHS---
 const createMatchForm = document.getElementById('createMatchForm');
 if (createMatchForm) {
     createMatchForm.addEventListener('submit', (e) => {
@@ -142,7 +128,7 @@ if (createMatchForm) {
         }).then(response => response.json())
             .then(data => {
                 alert(data.message);
-                hideCreateMatchPopup();
+            
             })
             .catch(err => console.error(err));
     });
