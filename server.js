@@ -3,7 +3,11 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql2');
 const connection = mysql.createConnection({
+<<<<<<< HEAD
   host: '172.29.18.122',
+=======
+  host: '172.29.18.127',
+>>>>>>> 64f6328 (mise en place d'une selection user et jeux)
   user: 'matchUp',
   password: 'matchUp',
   database: 'matchUp'

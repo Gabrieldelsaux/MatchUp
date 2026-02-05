@@ -50,8 +50,27 @@
     </section>
 
     <section class="features" id="games">
-        <h2 class="section-title">Catégories de <span class="gradient-text">jeux</span></h2>
-        <button id="createMatchBtn">Créer un match</button>
+        <div id="popupCreateMatch" class="popup">
+            <div class="popup-content">
+                <span class="close-btn" id="closeCreateMatch">&times;</span>
+                <h2>Créer un nouveau match</h2>
+                <form id="createMatchForm">
+                    <label for="gameSelect">Choisissez un jeu :</label>
+                    <select id="gameSelect" required>
+                        <option value="">--Sélectionnez un jeu--</option>
+                        <option value="chess">Échecs</option>
+                        <option value="checkers">Dames</option>
+                        <option value="pool">Billard</option>
+                    </select>
+
+                    <label for="opponentSelect">Choisissez un adversaire :</label>
+                    <select id="userlist" required>
+                        <option value="">--Sélectionnez un adversaire--</option>
+                    </select>
+
+                    <button type="submit" class="btn-primary">Lancer le défi</button>
+                </form>
+            </div>
         <div class="features-grid">
             <div class="feature-card game-card">
                 <div class="feature-icon">♟️</div>

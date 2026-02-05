@@ -44,90 +44,121 @@ function showAuthPopup() {
 
 // Connexion
 const loginButton = document.getElementById('loginButton');
-loginButton.addEventListener('click', () => {
-    const loginInput = document.getElementById('login-username').value;
-    const passwordInput = document.getElementById('login-password').value;
+if (loginButton) {
+    loginButton.addEventListener('click', () => {
+        const loginInputElem = document.getElementById('login-username');
+        const passwordInputElem = document.getElementById('login-password');
+        const loginInput = loginInputElem ? loginInputElem.value : '';
+        const passwordInput = passwordInputElem ? passwordInputElem.value : '';
 
-    fetch('/connexion', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ login: loginInput, password: passwordInput })
-    }).then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            alert('ID utilisateur : ' + data.user.id);
-            localStorage.setItem('userId', data.user.id);
-        });
-    hideAuthPopup();
-});
+        fetch('/connexion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ login: loginInput, password: passwordInput })
+        }).then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                if (data && data.user && data.user.id) {
+                    alert('ID utilisateur : ' + data.user.id);
+                    localStorage.setItem('userId', data.user.id);
+                }
+            })
+            .catch(err => console.error(err));
+        hideAuthPopup();
+    });
+}
 
 // Inscription
-reginput.addEventListener('click', () => {
-    fetch('/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ loginValue: lgInput.value, passwordValue: mdpInput.value })
-    }).then(response => response.text())
-        .then(data => {
-            alert(data);
-        });
-    hideAuthPopup();
-});
-
-//---RECUPERATION DES USER CONNECTE POUR AFFICHER DANS LA LISTE DEROULANTE---
-fetch('/users')
-    .then(response => response.json())
-    .then(users => {
-        const userSelect = document.getElementById('userSelect');
-        users.forEach(user => {
-            const option = document.createElement('option');
-            option.value = user.id;
-            option.textContent = user.login;
-            userSelect.appendChild(option);
-        });
+if (reginput) {
+    reginput.addEventListener('click', () => {
+        const loginVal = lgInput ? lgInput.value : '';
+        const passVal = mdpInput ? mdpInput.value : '';
+        fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ loginValue: loginVal, passwordValue: passVal })
+        }).then(response => response.text())
+            .then(data => {
+                alert(data);
+            })
+            .catch(err => console.error(err));
+        hideAuthPopup();
     });
+}
 
-//---CREATION DE MATCH ET AFFICHAGE DANS LA LISTE DEROULANTE---
-const createMatchBtn = document.getElementById('createMatchBtn');
-createMatchBtn.addEventListener('click', () => {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-        alert('Veuillez vous connecter pour créer un match.');
-        return;
-    }
+//---RECUPERATION DE TOUT LES USERS POUR LA CREATION DE MATCH POUR AFFICHER LEUR LOGIN DANS LA LISTE DEROULANTE---
+window.onload = () => {
+    fetch('/users')
 
-    fetch('/create-match', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ userId: userId })
-    }).then(response => response.json())
-        .then(data => {
-            alert(data.message);
-            const matchSelect = document.getElementById('matchSelect');
-            const option = document.createElement('option');
-            option.value = data.match.id;
-            option.textContent = `Match ${data.match.id}`;
-            matchSelect.appendChild(option);
+        .then(response => response.json())
+        .then(users => {
+            const usersList = document.getElementById('userlist');
+            users.forEach(user => {
+                //création d'un input select option avec id en value et login en texte  
+                const option = document.createElement('option');
+                option.value = users.id;
+                option.text = users.login;
+                usersList.appendChild(option);
+
+            });
         });
-});
+};
+//---CREATION DE POPUP QUAND ON APPUIE SUR CREER UN MATCH---
+function showCreateMatchPopup() {
+    const popup = document.getElementById('createMatchPopup');
+    if (popup) {
+        popup.style.display = 'block';
+    }
+}
 
+function hideCreateMatchPopup() {
+    const popup = document.getElementById('createMatchPopup');
+    if (popup) {
+        popup.style.display = 'none';
+    }
+}
+
+//---CREATION DE MATCH AVEC LE BOUTON DE LA POPUP---
+const createMatchBtn = document.getElementById('createMatchBtn');
+if (createMatchBtn) {
+    createMatchBtn.addEventListener('click', () => {
+        const userSelect = document.getElementById('userSelect');
+        const selectedUserId = userSelect ? userSelect.value : null;
+        if (selectedUserId) {
+            fetch('/create-match', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ opponentId: selectedUserId })
+            }).then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    hideCreateMatchPopup();
+                })
+                .catch(err => console.error(err));
+        } else {
+            alert('Veuillez sélectionner un adversaire.');
+        }
+    });
+}
 // --- DÉCONNEXION ---
 const logoutBtn = document.getElementById('logoutBtn');
-logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('userId');
-    showAuthPopup();
-});
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('userId');
+        showAuthPopup();
+    });
+}
 
 // --- ÉTAT INITIAL (Chargement) ---
 window.addEventListener('load', function() {
-    const user = localStorage.getItem('user');
-    if (user) {
+    const userId = localStorage.getItem('userId');
+    if (userId) {
         hideAuthPopup();
     } else {
         showAuthPopup();
