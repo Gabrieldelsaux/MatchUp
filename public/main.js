@@ -78,7 +78,20 @@ reginput.addEventListener('click', () => {
     hideAuthPopup();
 });
 
-//---CREATION DE MATCH---
+//---RECUPERATION DES USER CONNECTE POUR AFFICHER DANS LA LISTE DEROULANTE---
+fetch('/users')
+    .then(response => response.json())
+    .then(users => {
+        const userSelect = document.getElementById('userSelect');
+        users.forEach(user => {
+            const option = document.createElement('option');
+            option.value = user.id;
+            option.textContent = user.login;
+            userSelect.appendChild(option);
+        });
+    });
+
+//---CREATION DE MATCH ET AFFICHAGE DANS LA LISTE DEROULANTE---
 const createMatchBtn = document.getElementById('createMatchBtn');
 createMatchBtn.addEventListener('click', () => {
     const userId = localStorage.getItem('userId');
@@ -95,7 +108,12 @@ createMatchBtn.addEventListener('click', () => {
         body: JSON.stringify({ userId: userId })
     }).then(response => response.json())
         .then(data => {
-            alert('Match créé avec l\'ID : ' + data.matchId);
+            alert(data.message);
+            const matchSelect = document.getElementById('matchSelect');
+            const option = document.createElement('option');
+            option.value = data.match.id;
+            option.textContent = `Match ${data.match.id}`;
+            matchSelect.appendChild(option);
         });
 });
 
