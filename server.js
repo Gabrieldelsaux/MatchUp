@@ -117,10 +117,39 @@ app.post('/refuseMatch', (req, res) => {
 
     })});
 
+app.post('/acceptMatch', (req, res) => {
+  const {id_j1, id_j2,id_match} = req.body;
+  connection.query(
+    'UPDATE matchs SET status = "en cours" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
+    [id_j1, id_j2, id_match],
+    (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la mise à jour du match dans la base de données :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
+
+    })});
+
+app.get('/invitation', (req, res) => {
+  const {id_j1, id_j2,id_match} = req.query;
+  connection.query(
+    'SELECT * FROM matchs WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
+    [id_j1, id_j2, id_match],
+    (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la récupération de l\'invitation :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
+      res.json(results);
+    }
+  );
+});
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
-
 app.get('/matchs', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'matchs.html'));
 });
