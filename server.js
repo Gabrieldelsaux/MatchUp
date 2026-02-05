@@ -33,7 +33,7 @@ app.post('/register', (req, res) => {
         return;
       }
       console.log('Insertion réussie, ID utilisateur :', results.insertId);
-      res.json({ message: 'Inscription réussie !', userId: results.insertId });
+      console.log('Inscription réussie !', results.insertId );
     }
   )
 });
@@ -101,6 +101,20 @@ app.post('/finishMatch', (req, res) => {
     }
   )
 });
+
+app.post('refuseMatch', (req, res) => {
+  const {id_j1, id_j2,id_match} = req.body;
+  connection.query(
+    'UPDATE matchs SET status = "refuse" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
+    [id_j1, id_j2, id_match],
+    (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la mise à jour du match dans la base de données :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
+
+    })});
 
 
 app.listen(3000, () => {
