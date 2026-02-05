@@ -132,9 +132,8 @@ app.post('/acceptMatch', (req, res) => {
     })});
 
 app.get('/invitation', (req, res) => {
-  const {id_j1, id_j2,id_match} = req.query;
   connection.query(
-    'SELECT * FROM matchs WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
+    'SELECT * FROM matchs',
     [id_j1, id_j2, id_match],
     (err, results) => {
       if (err) {
