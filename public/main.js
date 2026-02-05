@@ -91,21 +91,25 @@ if (reginput) {
 }
 
 //---RECUPERATION DE TOUT LES USERS POUR LA CREATION DE MATCH POUR AFFICHER LEUR LOGIN DANS LA LISTE DEROULANTE---
+//---RECUPERATION DE TOUT LES USERS---
 window.onload = () => {
     fetch('/users')
-
         .then(response => response.json())
         .then(users => {
             const usersList = document.getElementById('userlist');
-            users.forEach(user => {
-                //création d'un input select option avec id en value et login en texte  
-                const option = document.createElement('option');
-                option.value = users.id;
-                option.text = users.login;
-                usersList.appendChild(option);
+            if (!usersList) return; // Sécurité si l'élément n'existe pas
+            
+            usersList.innerHTML = '<option value="">--Sélectionnez un adversaire--</option>'; // Nettoie la liste
 
+            users.forEach(user => {
+                const option = document.createElement('option');
+                // On utilise bien 'user' au singulier ici
+                option.value = user.id; 
+                option.text = user.login || user.username; // Utilise login ou username selon ton backend
+                usersList.appendChild(option);
             });
-        });
+        })
+        .catch(err => console.error("Erreur lors de la récup des users:", err));
 };
 //---CREATION DE POPUP QUAND ON APPUIE SUR CREER UN MATCH---
 function showCreateMatchPopup() {
