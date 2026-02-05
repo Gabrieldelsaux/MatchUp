@@ -184,47 +184,50 @@ function loadUsersList(currentUserId) {
 }
 
 //---CREATION FONCTION POUR RECEVOIR LES INVITATIONS---
-function addInvitation(invite) {
-    const container = document.getElementById('received-invites');
-
-    // Création de l'élément HTML
-    const inviteHTML = `
-        <div class="glass-card match-item" id="invite-${invite.id}">
-            <div class="match-main">
-                <div class="player-info">
-                    <div class="avatar-mini" style="background-image: url('${invite.avatar}')"></div>
-                    <div>
-                        <span class="player-name">${invite.playerName}</span>
-                        <span class="game-type">${invite.gameType}</span>
-                    </div>
-                </div>
-                <div class="match-actions">
-                    <button class="btn-icon accept" onclick="handleInvite(${invite.id}, 'accept')">✔</button>
-                    <button class="btn-icon decline" onclick="handleInvite(${invite.id}, 'decline')">✖</button>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Insertion au début de la liste (pour voir les nouvelles en premier)
-    container.insertAdjacentHTML('afterbegin', inviteHTML);
-}
-
-//---INVITATIONS---
 function invitationHandler() {
+    console.log("Recherche des invitations...");
+    
     fetch('/invitation') 
-    .then(results => results.json())
+    .then(res => res.json())
     .then(matchs => {
+        console.log("Données reçues :", matchs); // Vérifie ici dans ta console F12
+        
+        const receivedList = document.getElementById('received-invites');
+        const sentList = document.getElementById('sent-invites');
+        const currentUserId = localStorage.getItem('userId');
+
+        if(!currentUserId) return console.error("Pas de userId dans le localStorage");
+
+        receivedList.innerHTML = '';
+        sentList.innerHTML = '';
+
         matchs.forEach(match => {
-            if (match.status === 'en attente' && match.id_j1 == localStorage.getItem('userId')) {
-                addInvitation({
-                    id: match.id,
-                    playerName: match.login_j2,
-                    gameType: match.categorie
-                });
+            // Vérifie bien l'orthographe 'statut' (avec un T)
+            if (match.statut === 'en attente') {
+                
+                // CAS : Reçu (Je suis id_j2)
+                if (match.id_j2 == currentUserId) {
+                    addInvitation(receivedList, {
+                        id: match.id,
+                        playerName: "Joueur " + match.id_j1, 
+                        gameType: match.categorie
+                    }, true);
+                }
+
+                // CAS : Envoyé (Je suis id_j1)
+                if (match.id_j1 == currentUserId) {
+                    addInvitation(sentList, {
+                        id: match.id,
+                        playerName: "Joueur " + match.id_j2,
+                        gameType: match.categorie
+                    }, false);
+                }
             }
         });
     })
-    .catch(err => console.error("Erreur chargement invitations:", err));
-};
+    .catch(err => console.error("Erreur Fetch :", err));
+}
 
+// Lancement automatique
+document.addEventListener('DOMContentLoaded', invitationHandler);
+document.addEventListener('DOMContentLoaded', invitationHandler);

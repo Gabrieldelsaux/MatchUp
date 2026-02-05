@@ -134,7 +134,6 @@ app.post('/acceptMatch', (req, res) => {
 app.get('/invitation', (req, res) => {
   connection.query(
     'SELECT * FROM matchs',
-    [id_j1, id_j2, id_match],
     (err, results) => {
       if (err) {
         console.error('Erreur lors de la récupération de l\'invitation :', err);
