@@ -2,8 +2,9 @@
 const express = require('express');
 const app = express();
 const mysql = require('mysql2');
+const path = require('path');
 const connection = mysql.createConnection({
-  host: '172.29.18.127',
+  host: '172.29.18.112',
   user: 'matchUp',
   password: 'matchUp',
   database: 'matchUp'
@@ -102,7 +103,7 @@ app.post('/finishMatch', (req, res) => {
   )
 });
 
-app.post('refuseMatch', (req, res) => {
+app.post('/refuseMatch', (req, res) => {
   const {id_j1, id_j2,id_match} = req.body;
   connection.query(
     'UPDATE matchs SET status = "refuse" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
@@ -116,6 +117,13 @@ app.post('refuseMatch', (req, res) => {
 
     })});
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/matchs', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'matchs.html'));
+});
 
 app.listen(3000, () => {
   let monIp = require("ip").address();
