@@ -4,7 +4,7 @@ const app = express();
 const mysql = require('mysql2');
 const path = require('path');
 const connection = mysql.createConnection({
-  host: 'localhost',
+  host: '172.29.16.118',
   user: 'MatchUp',
   password: 'MatchUp',
   database: 'matchUp'
@@ -77,6 +77,10 @@ app.post('/connexion', (req, res) => {
   });
 });
 
+//--ENVOIE DE MATCH.HTML
+app.get('/matchs.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'matchs.html'));
+}); 
 
 //MATCH ET INVITATION
 app.post('/createMatch', (req, res) => {

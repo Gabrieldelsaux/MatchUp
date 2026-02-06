@@ -140,25 +140,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
-//--- Création de match ---
-document.getElementById('createMatchForm').addEventListener('submit', function(e) {
+//---Récupération des users ---
+function loadUsers(currentUserId) {
+    fetch('/users')
+    .then(res => res.json())
+    .then(users => {
+        const usersSelect = document.getElementById('userslist');
+        if (usersSelect) {
+            users.forEach(user => {
+                if (user.id != currentUserId) {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = user.login;
+                    usersSelect.appendChild(option);
+                }
+            });
+        }
+    })
+    .catch(err => console.error("Erreur chargement utilisateurs:", err));
+}
+
+
+//--- Création d'un match avec la sélection de l'adversaire et de la catégorie
+document.getElementById('createMatch').addEventListener('submit', (e) => {
     e.preventDefault();
-    const player1_id = localStorage.getItem('userId');
-    const player2_id = document.getElementById('opponentSelect').value;
+    const player1_id = localStorage.getItem('player1_id');
+    const player2_id = document.getElementById('userslist').value;
     const categorie = document.getElementById('gameSelect').value;
-    if (player1_id) {
-        alert(`Création du match contre l'utilisateur ${player2_id} pour le jeu ${categorie}`);
-        action = "createMatch";
-    } else {
-        alert("Action impossible : veuillez vous connecter.");
-        window.showAuthPopup();
-        return;
-    }
-    if (!player1_id) {
-        alert("veuillez sélectionner un adversaire et une catégorie.");
-        return;
-    }
-     fetch('/createMatch', {
+
+    fetch('/createMatch', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ player1_id, player2_id, categorie })
@@ -167,7 +177,8 @@ document.getElementById('createMatchForm').addEventListener('submit', function(e
     .then(data => {
         alert(data.message || "Match créé !");
         window.hideCreateMatchPopup();
-        location.reload();
+        if (typeof displayMatchs === "function") displayMatchs(player1_id);
     })
     .catch(err => console.error("Erreur création match:", err));
 });
+
