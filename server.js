@@ -74,17 +74,19 @@ app.post('/connexion', (req, res) => {
 //MATCH ET INVITATION
 app.post('/createMatch', (req, res) => {
   const { player1_id, player2_id, categorie } = req.body;
-  connection.query(
-    'INSERT INTO matchs (id_j1, id_j2,categorie) VALUES (?,?,?)',
-    [player1_id, player2_id, categorie],
-    (err, results) => {
+  
+  // On ajoute explicitement le status "en attente" pour éviter l'erreur SQL
+  const query = 'INSERT INTO matchs (id_j1, id_j2, categorie, status) VALUES (?, ?, ?, "en attente")';
+  
+  connection.query(query, [player1_id, player2_id, categorie], (err, results) => {
       if (err) {
-        console.error('Erreur lors de l\'insertion du match dans la base de données :', err);
-        res.status(500).json({ message: 'Erreur serveur' });
-        return;
+        console.error('Erreur SQL détaillée :', err);
+        return res.status(500).json({ message: 'Erreur serveur' });
       }
+      // On envoie une réponse de succès sinon le fetch côté client part en .catch()
+      res.status(200).json({ message: 'Match créé !', id: results.insertId });
     }
-  )
+  );
 });
 
 app.post('/finishMatch', (req, res) => {

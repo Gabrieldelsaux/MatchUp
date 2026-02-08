@@ -45,6 +45,30 @@
             </div>
         </div>
     </div>
+    <div id="matchModal" class="modal" style="display:none;">
+        <div class="modal-content popup_match">
+            <span class="close" onclick="closeMatchModal()">&times;</span>
+            <h2>Crée un match</h2>
+
+            <div class="form-group">
+                <label>Sélectionne un jeu :</label>
+                <select id="gameSelect">
+                    <option value="echecs">♟️ Échecs</option>
+                    <option value="dames">🔴 Dames</option>
+                    <option value="billard">🎱 Billard</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Sélectionne un adversaire :</label>
+                <select id="opponentSelect">
+                    <option value="">Chargement des joueurs...</option>
+                </select>
+            </div>
+
+            <button id="createMatchBtn" class="btn-primary">Lancer le défi</button>
+        </div>
+    </div>
 
     <section class="hero">
         <div class="bg-shape shape-1"></div>
@@ -61,7 +85,8 @@
                 Échecs, dames, billard, et bien plus encore vous attendent.
             </p>
             <div class="cta-buttons">
-                <button class="btn-primary" onclick="showAuthPopup()">Commencer à jouer</button>
+                <button class="btn-primary" onclick="openAuth()">Commencer à jouer</button>
+                <button class="btn-secondary" onclick="openMatchModal()">🏆 Créer un Match</button>
                 <button class="btn-secondary">Voir les classements</button>
             </div>
         </div>

@@ -769,8 +769,8 @@ footer {
     margin-bottom: 30px;
     background: var(--gradient);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 #authTabs {
@@ -1174,4 +1174,29 @@ footer {
     font-size: 28px;
     cursor: pointer;
     color: #888;
+}
+
+.popup_match {
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    border: 2px solid #00e5ff; /* Bordure néon bleu */
+    box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+    text-align: center;
+}
+
+.popup_match select {
+    width: 100%;
+    padding: 12px;
+    margin: 15px 0;
+    background: #000;
+    color: #fff;
+    border: 1px solid #333;
+    border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+}
+
+.popup_match h2 {
+    color: #fff;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
