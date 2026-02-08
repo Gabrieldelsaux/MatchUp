@@ -108,27 +108,32 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. INSCRIPTION
-    const registerForm = document.getElementById('registerForm');
-    if (registerForm) {
-        registerForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+    // 5. INCRIPTION
+    const registerButton = document.getElementById('reggisterSubmit');
+    if (registerButton) {
+        registerButton.addEventListener('click', () => {
             const userVal = document.getElementById('register-username').value;
             const passVal = document.getElementById('register-password').value;
 
             fetch('/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ loginValue: userVal, passwordValue: passVal })
+                body: JSON.stringify({ login: userVal, password: passVal })
             })
             .then(res => res.json())
             .then(data => {
-                alert("Compte créé ! Connectez-vous.");
-                location.reload();
+                if (data.userId) {
+                    alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
+                    // Optionnel : basculer automatiquement sur l'onglet de connexion
+                    document.querySelector('.tab-btn[data-tab="login"]').click();
+                } else {
+                    alert(data.message || "Erreur lors de l'inscription");
+                }
             })
             .catch(err => console.error("Erreur inscription:", err));
         });
-    }
+    }   
+    
 
     // 6. DÉCONNEXION
     if (logoutBtn) {

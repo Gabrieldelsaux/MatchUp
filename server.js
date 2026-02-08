@@ -4,9 +4,9 @@ const app = express();
 const mysql = require('mysql2');
 const path = require('path');
 const connection = mysql.createConnection({
-  host: '172.29.16.118',
-  user: 'MatchUp',
-  password: 'MatchUp',
+  host: '192.168.1.22',
+  user: 'matchUp',
+  password: 'matchUp',
   database: 'matchUp'
 });
 
