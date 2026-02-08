@@ -1120,3 +1120,58 @@ footer {
     align-items: center;
     justify-content: center;
 }
+
+/* Style de la Popup */
+.modal {
+    display: none; /* Caché par défaut */
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px); /* Flou d'arrière-plan */
+}
+
+.modal-content {
+    background: #1a1a1a;
+    margin: 10% auto;
+    padding: 30px;
+    border: 1px solid #333;
+    width: 600px;
+    border-radius: 20px;
+    position: relative;
+    color: white;
+}
+
+.auth-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.auth-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-box h2 { font-family: 'Clash Display'; font-size: 1.5rem; color: #00e5ff; }
+
+.auth-box input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #0b0b0b;
+    color: white;
+}
+
+.divider { width: 1px; background: #333; }
+
+.close {
+    position: absolute;
+    right: 20px; top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #888;
+}

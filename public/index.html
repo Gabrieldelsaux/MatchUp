@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MatchUp - Plateforme de Jeux Compétitifs</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Clash+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Clash+Display:wght@600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="main.css">
 </head>
 
@@ -16,25 +18,33 @@
             <li><a href="/matchs">Matchs</a></li>
             <li><a href="#games">Jeux</a></li>
             <li><a href="#leaderboard">Classement</a></li>
-            <li><a href="#how-it-works">Comment ça marche</a></li>
         </ul>
-        <div class="s'inscrire">
-                <label for="username">Nom d'utilisateur :</label> 
-                <input type="text" id="usernameInput" name="username" placeholder="Entrez votre nom">
-                <label for="password">Mot de passe :</label>
-                <input type="password" id="passwordInput" name="password" placeholder="Entrez votre mot de passe">
-                <button id="registerSubmit">S'inscrire</button>
-                
-        </div>
-        <div class="seConnecter">
-                <label for="username">Nom d'utilisateur :</label> 
-                <input type="text" id="loginUsernameInput" name="username" placeholder="Entrez votre nom">
-                <label for="password">Mot de passe :</label>
-                <input type="password" id="loginPasswordInput" name="password" placeholder="Entrez votre mot de passe">
-                <button id="loginBtn">Connexion</button>
-        </div>
-        
+        <button class="btn-primary" onclick="openAuth()">Connexion / Inscription</button>
     </nav>
+
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuth()">&times;</span>
+
+            <div class="auth-container">
+                <div class="auth-box">
+                    <h2>S'inscrire</h2>
+                    <input type="text" id="usernameInput" placeholder="Nom d'utilisateur">
+                    <input type="password" id="passwordInput" placeholder="Mot de passe">
+                    <button id="registerSubmit" class="btn-primary">Créer un compte</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="auth-box">
+                    <h2>Connexion</h2>
+                    <input type="text" id="loginUsernameInput" placeholder="Nom d'utilisateur">
+                    <input type="password" id="loginPasswordInput" placeholder="Mot de passe">
+                    <button id="loginBtn" class="btn-primary">Se connecter</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <section class="hero">
         <div class="bg-shape shape-1"></div>
@@ -43,7 +53,7 @@
         <div class="hero-content">
             <h1>
                 Défiez les meilleurs<br>
-                
+
                 <span class="gradient-text">joueurs du monde</span>
             </h1>
             <p>
@@ -73,8 +83,9 @@
     </section>
 
 
-        
+
 
 </body>
 <script src="main.js"></script>
+
 </html>

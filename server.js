@@ -4,10 +4,10 @@ const app = express();
 const mysql = require('mysql2');
 const path = require('path');
 const connection = mysql.createConnection({
-  host: '172.29.18.127',
+  host: '192.168.1.22',
   user: 'matchUp',
   password: 'matchUp',
-  database: 'matchUp'
+  database: 'MatchUp'
 });
 
 connection.connect((err) => {
@@ -34,7 +34,7 @@ app.post('/register', (req, res) => {
         return;
       }
       console.log('Insertion réussie, ID utilisateur :', results.insertId);
-      console.log('Inscription réussie !', results.insertId );
+      res.json({ message: 'Inscription réussie !', id: results.insertId });
     }
   )
 });
