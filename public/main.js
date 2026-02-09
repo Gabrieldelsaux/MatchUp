@@ -1,8 +1,11 @@
+const reginput = document.getElementById('registerSubmit');
+const lgregister = document.getElementById('register-username');
+const mdpregister = document.getElementById('register-password');
 /**
  * GESTION DES AFFICHAGES (POPUP & UI)
  */
 
-window.showAuthPopup = function() {
+window.showAuthPopup = function () {
     const overlay = document.getElementById('authOverlay');
     if (overlay) {
         overlay.style.display = 'flex'; // On force le flex pour l'alignement
@@ -18,12 +21,12 @@ window.showAuthPopup = function() {
     }
 };
 
-window.hideAuthPopup = function() {
+window.hideAuthPopup = function () {
     const overlay = document.getElementById('authOverlay');
     if (overlay) overlay.style.display = 'none';
 };
 
-window.showCreateMatchPopup = function() {
+window.showCreateMatchPopup = function () {
     if (!localStorage.getItem('userId')) {
         alert("Action impossible : veuillez vous connecter.");
         window.showAuthPopup();
@@ -64,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const tabType = btn.getAttribute('data-tab'); // 'login' ou 'register'
-            
+
             // UI des boutons
             tabBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -85,84 +88,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. CONNEXION
     const loginButton = document.getElementById('loginButton');
-    if (loginButton) {
-        loginButton.addEventListener('click', () => {
-            const userVal = document.getElementById('login-username').value;
-            const passVal = document.getElementById('login-password').value;
+    loginButton.addEventListener('click', () => {
+        const loginInput = document.getElementById('login-username').value;
+        const passwordInput = document.getElementById('login-password').value;
 
-            fetch('/connexion', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ login: userVal, password: passVal })
-            })
-            .then(res => res.json())
+        fetch('/connexion', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ login: loginInput, password: passwordInput })
+        }).then(response => response.json())
             .then(data => {
-                if (data.user) {
-                    localStorage.setItem('userId', data.user.id);
-                    location.reload();
-                } else {
-                    alert(data.message || "Identifiants incorrects");
-                }
-            })
-            .catch(err => console.error("Erreur connexion:", err));
-        });
-    }
+                alert(data.message);
+                alert('ID utilisateur : ' + data.user.id);
+                localStorage.setItem('userId', data.user.id);
+            });
+        hideAuthPopup();
+    });
 
-    // 5. INCRIPTION
-    const registerButton = document.getElementById('reggisterSubmit');
-    if (registerButton) {
-        registerButton.addEventListener('click', () => {
-            const userVal = document.getElementById('register-username').value;
-            const passVal = document.getElementById('register-password').value;
-
-            fetch('/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ login: userVal, password: passVal })
-            })
-            .then(res => res.json())
+    // 5. INCRIPTION 
+    reginput.addEventListener('click', () => {
+        fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ login: lgregister.value, password: mdpregister.value })
+        }).then(response => response.json())
             .then(data => {
-                if (data.userId) {
-                    alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
-                    // Optionnel : basculer automatiquement sur l'onglet de connexion
-                    document.querySelector('.tab-btn[data-tab="login"]').click();
-                } else {
-                    alert(data.message || "Erreur lors de l'inscription");
-                }
-            })
-            .catch(err => console.error("Erreur inscription:", err));
-        });
-    }   
-    
-
-    // 6. DÉCONNEXION
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('userId');
-            location.reload();
-        });
-    }
-
+                alert(data.message);
+                alert('ID utilisateur : ' + data.userId);
+                localStorage.setItem('userId', data.userId);
+            });
+        hideAuthPopup();
+    });
 });
+
+
+// 6. DÉCONNEXION
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+        localStorage.removeItem('userId');
+        location.reload();
+    });
+}
 
 //---Récupération des users ---
 function loadUsers(currentUserId) {
     fetch('/users')
-    .then(res => res.json())
-    .then(users => {
-        const usersSelect = document.getElementById('userslist');
-        if (usersSelect) {
-            users.forEach(user => {
-                if (user.id != currentUserId) {
-                    const option = document.createElement('option');
-                    option.value = user.id;
-                    option.textContent = user.login;
-                    usersSelect.appendChild(option);
-                }
-            });
-        }
-    })
-    .catch(err => console.error("Erreur chargement utilisateurs:", err));
+        .then(res => res.json())
+        .then(users => {
+            const usersSelect = document.getElementById('userslist');
+            if (usersSelect) {
+                users.forEach(user => {
+                    if (user.id != currentUserId) {
+                        const option = document.createElement('option');
+                        option.value = user.id;
+                        option.textContent = user.login;
+                        usersSelect.appendChild(option);
+                    }
+                });
+            }
+        })
+        .catch(err => console.error("Erreur chargement utilisateurs:", err));
 }
 
 
@@ -178,12 +167,12 @@ document.getElementById('createMatch').addEventListener('submit', (e) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ player1_id, player2_id, categorie })
     })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message || "Match créé !");
-        window.hideCreateMatchPopup();
-        if (typeof displayMatchs === "function") displayMatchs(player1_id);
-    })
-    .catch(err => console.error("Erreur création match:", err));
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message || "Match créé !");
+            window.hideCreateMatchPopup();
+            if (typeof displayMatchs === "function") displayMatchs(player1_id);
+        })
+        .catch(err => console.error("Erreur création match:", err));
 });
 

@@ -1,10 +1,11 @@
 //----------------------------------------CONNEXION A LA BDD----------------------------------------------------//
 const express = require('express');
+const { request } = require('http');
 const app = express();
 const mysql = require('mysql2');
 const path = require('path');
 const connection = mysql.createConnection({
-  host: '192.168.1.22',
+  host: '172.29.18.127',
   user: 'matchUp',
   password: 'matchUp',
   database: 'matchUp'
@@ -27,7 +28,7 @@ app.post('/register', (req, res) => {
 
   connection.query(
     'INSERT INTO users (login, password) VALUES (?,?)',
-    [login, password],
+    [req.body.login, req.body.password],
     (err, results) => {
       if (err) {
         console.error('Erreur lors de l\'insertion dans la base de données :', err);
