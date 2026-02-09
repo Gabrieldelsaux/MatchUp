@@ -1,11 +1,10 @@
 //----------------------------------------CONNEXION A LA BDD----------------------------------------------------//
 const express = require('express');
-const { request } = require('http');
 const app = express();
 const mysql = require('mysql2');
 const path = require('path');
 const connection = mysql.createConnection({
-  host: '172.29.18.127',
+  host: '172.29.18.112',
   user: 'matchUp',
   password: 'matchUp',
   database: 'matchUp'
@@ -24,28 +23,21 @@ app.use(express.json());
 //-----------------------------------------------------ROUTES----------------------------------------------------//
 //CONNEXION ET USER
 app.post('/register', (req, res) => {
-  const { login, password } = req.body;
-
+  const { loginValue, passwordValue } = req.body;
   connection.query(
     'INSERT INTO users (login, password) VALUES (?,?)',
-    [req.body.login, req.body.password],
+    [loginValue, passwordValue],
     (err, results) => {
       if (err) {
         console.error('Erreur lors de l\'insertion dans la base de données :', err);
         res.status(500).json({ message: 'Erreur serveur' });
         return;
       }
-
       console.log('Insertion réussie, ID utilisateur :', results.insertId);
-
-      res.json({
-        message: 'Inscription réussie',
-        userId: results.insertId
-      });
+      console.log('Inscription réussie !', results.insertId );
     }
-  );
+  )
 });
-
 
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM users', (err, results) => {
@@ -78,30 +70,22 @@ app.post('/connexion', (req, res) => {
   });
 });
 
-//--ENVOIE DE MATCH.HTML
-app.get('/matchs.html', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'matchs.html'));
-}); 
 
 //MATCH ET INVITATION
 app.post('/createMatch', (req, res) => {
-    const { player1_id, player2_id, categorie } = req.body;
-
-    connection.query(
-        'INSERT INTO matchs (id_j1, id_j2, categorie) VALUES (?,?,?)',
-        [player1_id, player2_id, categorie],
-        (err, results) => {
-            if (err) {
-                console.error('Erreur lors de l\'insertion du match dans la base de données :', err);
-                res.status(500).json({ message: 'Erreur serveur' });
-                return;
-            }
-
-            res.json({ message: "Match créé !", matchId: results.insertId });
-        }
-    );
+  const { player1_id, player2_id, categorie } = req.body;
+  connection.query(
+    'INSERT INTO matchs (id_j1, id_j2,categorie) VALUES (?,?,?)',
+    [player1_id, player2_id, categorie],
+    (err, results) => {
+      if (err) {
+        console.error('Erreur lors de l\'insertion du match dans la base de données :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
+    }
+  )
 });
-
 
 app.post('/finishMatch', (req, res) => {
   const {id_j1, id_j2, score_j1, score_j2,gagnant,id_match} = req.body;

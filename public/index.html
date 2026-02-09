@@ -68,21 +68,31 @@
                 <div class="game-stats"><span>👥 12,543 joueurs</span></div>
             </div>
         </div>
+
+        <div id="popupMatch" class="overlay" style="display: none;">
+            <div class="popup-card">
+                <h3>Nouveau Défi</h3>
+                <form id="createMatchForm">
+                    <div style="margin-bottom: 15px; text-align: left;">
+                        <label for="gameSelect">Choisissez un jeu :</label>
+                        <select id="gameSelect" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                            <option value="chess">♟️ Échecs</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 20px; text-align: left;">
+                        <label for="userlist">Choisissez un adversaire :</label>
+                        <select id="userlist" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                            <option value="">-- Sélectionnez un adversaire --</option>
+                            </select>
+                    </div>
+
+                    <button type="submit" class="btnCreateMatch">Lancer le défi</button>
+                    <button type="button" class="btnClose" onclick="document.getElementById('popupMatch').style.display='none'">Annuler</button>
+                </form>
+            </div>
+        </div>
     </section>
-
-    <form id="createMatch">
-        <h2>Créer un Match</h2>
-        <label for="gameSelect">Choisissez un jeu :</label>
-        <select id="gameSelect" required>
-            <option value="">--Sélectionnez--</option>
-            <option value="chess">Échecs</option>
-        </select>
-        <select id="userslist" required>
-            <option value="">--Choisissez un adversaire--</option>
-        </select>
-    <button type="submit">Créer</button>
-    </form>
-
 
     <div id="authOverlay" style="display: none;">
         <div id="authPopup">

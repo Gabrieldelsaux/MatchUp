@@ -1,11 +1,21 @@
-const reginput = document.getElementById('registerSubmit');
-const lgregister = document.getElementById('register-username');
-const mdpregister = document.getElementById('register-password');
 /**
  * GESTION DES AFFICHAGES (POPUP & UI)
  */
 
-window.showAuthPopup = function () {
+window.showAuthPopup = function() {
+    const overlay = document.getElementById('authOverlay');
+    if (overlay) {
+        overlay.style.display = 'flex'; // On force le flex pour l'alignement
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.sty
+
+/**
+ * GESTION DES AFFICHAGES (POPUP & UI)
+ */
+
+window.showAuthPopup = function() {
     const overlay = document.getElementById('authOverlay');
     if (overlay) {
         overlay.style.display = 'flex'; // On force le flex pour l'alignement
@@ -21,12 +31,12 @@ window.showAuthPopup = function () {
     }
 };
 
-window.hideAuthPopup = function () {
+window.hideAuthPopup = function() {
     const overlay = document.getElementById('authOverlay');
     if (overlay) overlay.style.display = 'none';
 };
 
-window.showCreateMatchPopup = function () {
+window.showCreateMatchPopup = function() {
     if (!localStorage.getItem('userId')) {
         alert("Action impossible : veuillez vous connecter.");
         window.showAuthPopup();
@@ -67,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const tabType = btn.getAttribute('data-tab'); // 'login' ou 'register'
-
+            
             // UI des boutons
             tabBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
@@ -88,91 +98,175 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4. CONNEXION
     const loginButton = document.getElementById('loginButton');
-    loginButton.addEventListener('click', () => {
-        const loginInput = document.getElementById('login-username').value;
-        const passwordInput = document.getElementById('login-password').value;
+    if (loginButton) {
+        loginButton.addEventListener('click', () => {
+            const userVal = document.getElementById('login-username').value;
+            const passVal = document.getElementById('login-password').value;
 
-        fetch('/connexion', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ login: loginInput, password: passwordInput })
-        }).then(response => response.json())
+            fetch('/connexion', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ login: userVal, password: passVal })
+            })
+            .then(res => res.json())
             .then(data => {
-                alert(data.message);
-                alert('ID utilisateur : ' + data.user.id);
-                localStorage.setItem('userId', data.user.id);
-            });
-        hideAuthPopup();
-    });
+                if (data.user) {
+                    localStorage.setItem('userId', data.user.id);
+                    location.reload();
+                } else {
+                    alert(data.message || "Identifiants incorrects");
+                }
+            })
+            .catch(err => console.error("Erreur connexion:", err));
+        });
+    }
 
-    // 5. INCRIPTION 
-    reginput.addEventListener('click', () => {
-        fetch('/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ login: lgregister.value, password: mdpregister.value })
-        }).then(response => response.json())
+    // 5. INSCRIPTION
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const userVal = document.getElementById('register-username').value;
+            const passVal = document.getElementById('register-password').value;
+
+            fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ loginValue: userVal, passwordValue: passVal })
+            })
+            .then(res => res.json())
             .then(data => {
-                alert(data.message);
-                alert('ID utilisateur : ' + data.userId);
-                localStorage.setItem('userId', data.userId);
-            });
-        hideAuthPopup();
-    });
+                alert("Compte créé ! Connectez-vous.");
+                location.reload();
+            })
+            .catch(err => console.error("Erreur inscription:", err));
+        });
+    }
+
+    // 6. DÉCONNEXION
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            localStorage.removeItem('userId');
+            location.reload();
+        });
+    }
+
+    // 7. CRÉATION DE MATCH
+    const createMatchForm = document.getElementById('createMatchForm');
+    if (createMatchForm) {
+        createMatchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const p1 = localStorage.getItem('userId');
+            const p2 = document.getElementById('userlist').value;
+            const game = document.getElementById('gameSelect').value;
+
+            if (!p2) return alert("Veuillez choisir un adversaire !");
+
+            fetch('/createMatch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ player1_id: p1, player2_id: p2, categorie: game })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert("Invitation envoyée !");
+                document.getElementById('popupMatch').style.display = 'none';
+            })
+            .catch(err => console.error("Erreur match:", err));
+        });
+    }
+    invitationHandler();
 });
 
-
-// 6. DÉCONNEXION
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('userId');
-        location.reload();
-    });
-}
-
-//---Récupération des users ---
-function loadUsers(currentUserId) {
+function loadUsersList(currentUserId) {
     fetch('/users')
         .then(res => res.json())
         .then(users => {
-            const usersSelect = document.getElementById('userslist');
-            if (usersSelect) {
-                users.forEach(user => {
-                    if (user.id != currentUserId) {
-                        const option = document.createElement('option');
-                        option.value = user.id;
-                        option.textContent = user.login;
-                        usersSelect.appendChild(option);
-                    }
-                });
-            }
-        })
-        .catch(err => console.error("Erreur chargement utilisateurs:", err));
+            const select = document.getElementById('userlist');
+            if (!select) return;
+            select.innerHTML = '<option value="">-- Sélectionnez un adversaire --</option>';
+            users.forEach(u => {
+                if (u.id != currentUserId) {
+                    const opt = document.createElement('option');
+                    opt.value = u.id;
+                    opt.text = u.login;
+                    select.appendChild(opt);
+                }
+            });
+        });
 }
 
+//---CREATION FONCTION POUR RECEVOIR LES INVITATIONS---
+function invitationHandler() {
+    console.log("Recherche des invitations...");
+    
+    fetch('/invitation') 
+    .then(res => res.json())
+    .then(matchs => {
+        console.log("Données reçues :", matchs); // Vérifie ici dans ta console F12
+        
+        const receivedList = document.getElementById('received-invites');
+        const sentList = document.getElementById('sent-invites');
+        const currentUserId = localStorage.getItem('userId');
 
-//--- Création d'un match avec la sélection de l'adversaire et de la catégorie
-document.getElementById('createMatch').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const player1_id = localStorage.getItem('player1_id');
-    const player2_id = document.getElementById('userslist').value;
-    const categorie = document.getElementById('gameSelect').value;
+        if(!currentUserId) return console.error("Pas de userId dans le localStorage");
 
-    fetch('/createMatch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ player1_id, player2_id, categorie })
+        receivedList.innerHTML = '';
+        sentList.innerHTML = '';
+
+        matchs.forEach(match => {
+            // Vérifie bien l'orthographe 'statut' (avec un T)
+            if (match.statut === 'en attente') {
+                
+                // CAS : Reçu (Je suis id_j2)
+                if (match.id_j2 == currentUserId) {
+                    addInvitation(receivedList, {
+                        id: match.id,
+                        playerName: "Joueur " + match.id_j1, 
+                        gameType: match.categorie
+                    }, true);
+                }
+
+                // CAS : Envoyé (Je suis id_j1)
+                if (match.id_j1 == currentUserId) {
+                    addInvitation(sentList, {
+                        id: match.id,
+                        playerName: "Joueur " + match.id_j2,
+                        gameType: match.categorie
+                    }, false);
+                }
+            }
+        });
     })
-        .then(res => res.json())
-        .then(data => {
-            alert(data.message || "Match créé !");
-            window.hideCreateMatchPopup();
-            if (typeof displayMatchs === "function") displayMatchs(player1_id);
-        })
-        .catch(err => console.error("Erreur création match:", err));
-});
+    .catch(err => console.error("Erreur Fetch :", err));
+}
 
+// Lancement automatique
+document.addEventListener('DOMContentLoaded', invitationHandler);
+document.addEventListener('DOMContentLoaded', invitationHandler);
+
+
+
+le.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.8)';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.zIndex = '10000';
+    }
+};
+
+window.hideAuthPopup = function() {
+    const overlay = document.getElementById('authOverlay');
+    if (overlay) overlay.style.display = 'none';
+};
+
+window.showCreateMatchPopup = function() {
+    if (!localStorage.getItem('userId')) {
+        alert("Action impossible : veuillez vous connecter.");
+        window.showAuthPopup();
+        return;
+    }
+    const popup = document.getElementById('popupMatch');
+    if (popup) popup.style.display = 'flex';
+};
