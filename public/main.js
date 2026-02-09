@@ -268,5 +268,8 @@ window.showCreateMatchPopup = function() {
         return;
     }
     const popup = document.getElementById('popupMatch');
-    if (popup) popup.style.display = 'flex';
+    if (popup) {
+        popup.style.display = 'flex';
+        loadUsersList(localStorage.getItem('userId'));
+    }
 };
