@@ -1088,3 +1088,35 @@ footer {
         transform: translateY(0);
     }
 }
+
+/* CSS POUR LA POPUP REGISTER */
+#registerPopup {
+    display: none; /* Caché par le JS au départ */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 27, 43, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* CSS LOGINPOPUP */
+#loginPopup {
+    display: none; /* Caché par le JS au départ */
+    position: fixed;
+    top: 0;         
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(13, 27, 43, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

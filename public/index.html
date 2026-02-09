@@ -18,7 +18,22 @@
             <li><a href="#leaderboard">Classement</a></li>
             <li><a href="#how-it-works">Comment ça marche</a></li>
         </ul>
-        <button class="nav-cta" id="logoutBtn" style="display: none;">Déconnexion</button>
+        <div class="s'inscrire">
+                <label for="username">Nom d'utilisateur :</label> 
+                <input type="text" id="usernameInput" name="username" placeholder="Entrez votre nom">
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="passwordInput" name="password" placeholder="Entrez votre mot de passe">
+                <button id="registerSubmit">S'inscrire</button>
+                
+        </div>
+        <div class="seConnecter">
+                <label for="username">Nom d'utilisateur :</label> 
+                <input type="text" id="loginUsernameInput" name="username" placeholder="Entrez votre nom">
+                <label for="password">Mot de passe :</label>
+                <input type="password" id="loginPasswordInput" name="password" placeholder="Entrez votre mot de passe">
+                <button id="loginBtn">Connexion</button>
+        </div>
+        
     </nav>
 
     <section class="hero">
@@ -57,78 +72,8 @@
         </div>
     </section>
 
-    <section class="features" id="games">
-        <div class="section-title">Nos Jeux</div>
+
         
-        <div class="features-grid">
-            <div class="feature-card game-card" onclick="showCreateMatchPopup()">
-                <div class="feature-icon">♟️</div>
-                <h3>Échecs</h3>
-                <p>Le jeu de stratégie classique.</p>
-                <div class="game-stats"><span>👥 12,543 joueurs</span></div>
-            </div>
-        </div>
-
-        <div id="popupMatch" class="overlay" style="display: none;">
-            <div class="popup-card">
-                <h3>Nouveau Défi</h3>
-                <form id="createMatchForm">
-                    <div style="margin-bottom: 15px; text-align: left;">
-                        <label for="gameSelect">Choisissez un jeu :</label>
-                        <select id="gameSelect" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
-                            <option value="chess">♟️ Échecs</option>
-                        </select>
-                    </div>
-
-                    <div style="margin-bottom: 20px; text-align: left;">
-                        <label for="userlist">Choisissez un adversaire :</label>
-                        <select id="userlist" required style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
-                            <option value="">-- Sélectionnez un adversaire --</option>
-                            </select>
-                    </div>
-
-                    <button type="submit" class="btnCreateMatch">Lancer le défi</button>
-                    <button type="button" class="btnClose" onclick="document.getElementById('popupMatch').style.display='none'">Annuler</button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <div id="authOverlay" style="display: none;">
-        <div id="authPopup">
-            <h2>Rejoignez MatchUp</h2>
-
-            <div id="authTabs">
-                <button class="tab-btn active" data-tab="login">Connexion</button>
-                <button class="tab-btn" data-tab="register">Inscription</button>
-            </div>
-
-            <form id="loginForm" class="auth-form active">
-                <div>
-                    <label for="login-username">Nom d'utilisateur</label>
-                    <input type="text" id="login-username" required placeholder="Votre pseudo">
-                </div>
-                <div>
-                    <label for="login-password">Mot de passe</label>
-                    <input type="password" id="login-password" required placeholder="••••••••">
-                </div>
-                <button type="button" id="loginButton">Se connecter</button>
-            </form>
-
-            <form id="registerForm" class="auth-form">
-                <div>
-                    <label for="register-username">Nom d'utilisateur</label>
-                    <input type="text" id="register-username" required placeholder="Choisissez un pseudo">
-                </div>
-                <div>
-                    <label for="register-password">Mot de passe</label>
-                    <input type="password" id="register-password" required placeholder="••••••••">
-                </div>
-                <button type="submit" id="registerSubmit">Créer mon compte</button>
-            </form>
-        </div>
-    </div>
-
 
 </body>
 <script src="main.js"></script>
