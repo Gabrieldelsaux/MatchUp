@@ -1200,3 +1200,21 @@ footer {
     text-transform: uppercase;
     letter-spacing: 2px;
 }
+
+#logoutBtn {
+    background: #eecaca; /* Teinte rosée de ton image */
+    color: #ff4b4b;      /* Texte rouge */
+    border: 1.5px solid #ff4b4b;
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+#logoutBtn:hover {
+    background: #ff4b4b;
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 75, 75, 0.3);
+}

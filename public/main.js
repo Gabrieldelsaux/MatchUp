@@ -100,7 +100,27 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (countSent === 0) sentList.innerHTML = "<p style='opacity:0.5;'>Aucun défi envoyé.</p>";
             });
     }
-
+    // --- CREATION DE COMPTE ---
+    const btnSignup = document.getElementById("registerSubmit");
+    if (btnSignup) {
+        btnSignup.addEventListener("click", (e) => {
+            e.preventDefault();
+            const username = document.getElementById("usernameInput").value;
+            const password = document.getElementById("passwordInput").value;
+            fetch("/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ loginValue: username, passwordValue: password }),
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.user) {
+                    localStorage.setItem("user", JSON.stringify(data.user));
+                    location.reload();
+                } else { alert("Erreur lors de l'inscription"); }
+            });
+        });
+    }
     // --- B. CONNEXION ---
     const btnLogin = document.getElementById("loginBtn");
     if (btnLogin) {
@@ -152,3 +172,25 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const logoutBtn = document.getElementById("logoutBtn");
+    const loginBtnNav = document.querySelector(".nav-cta"); 
+
+    if (user) {
+        // État : CONNECTÉ
+        if (loginBtnNav) loginBtnNav.style.display = "none";    // Cache Connexion
+        if (logoutBtn) logoutBtn.style.display = "inline-block"; // Montre Déconnexion
+    } else {
+        // État : DÉCONNECTÉ
+        if (loginBtnNav) loginBtnNav.style.display = "inline-block"; // Montre Connexion
+        if (logoutBtn) logoutBtn.style.display = "none";             // Cache Déconnexion
+    }
+});
+
+// N'oublie pas la fonction logout
+function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "index.html"; // Redirige et rafraîchit
+}

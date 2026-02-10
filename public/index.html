@@ -14,14 +14,18 @@
 <body>
     <nav>
         <div class="logo">MatchUp</div>
-        <ul class="nav-links">
-            <li><a href="/matchs">Matchs</a></li>
-            <li><a href="#games">Jeux</a></li>
-            <li><a href="#leaderboard">Classement</a></li>
-        </ul>
-        <button class="btn-primary" onclick="openAuth()">Connexion / Inscription</button>
-    </nav>
 
+        <ul class="nav-links">
+            <li><a href="index.html">Matchs</a></li>
+            <li><a href="index.html#games">Jeux</a></li>
+            <li><a href="#">Classement</a></li>
+        </ul>
+
+        <div class="nav-auth">
+            <button class="nav-cta" onclick="openAuth()">Connexion / Inscription</button>
+            <button id="logoutBtn" onclick="logout()" style="display:none;">Déconnexion</button>
+        </div>
+    </nav>
     <div id="authModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeAuth()">&times;</span>
