@@ -164,7 +164,7 @@ app.post('/refuseMatch', (req, res) => {
 app.post('/acceptMatch', (req, res) => {
   const { id_j1, id_j2, id_match } = req.body;
   connection.query(
-    'UPDATE matchs SET statut = "en cours" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
+    'UPDATE matchs SET statut = "en_cours" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
     [id_j1, id_j2, id_match],
     (err, results) => {
       if (err) {

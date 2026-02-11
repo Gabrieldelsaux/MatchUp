@@ -1504,3 +1504,204 @@ footer {
 .btn-accept:active, .btn-refuse:active {
     transform: translateY(0);
 }
+
+/* ===== SECTION JEUX - DESIGN PREMIUM ===== */
+.games-section {
+    padding: 100px 60px;
+    background: #F5F5F3;
+    position: relative;
+}
+
+.games-label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: #7C90AD;
+    margin-bottom: 14px;
+    opacity: 0.8;
+}
+
+.games-title {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 52px;
+    font-weight: 700;
+    text-align: center;
+    color: #1C263D;
+    letter-spacing: -2px;
+    margin-bottom: 60px;
+}
+
+.games-title span {
+    background: linear-gradient(135deg, #435B7B 0%, #7C90AD 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Grille */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Cartes individuelles */
+.game-card {
+    position: relative;
+    height: 320px;
+    border-radius: 32px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #0D1B2B;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(13, 27, 43, 0.1);
+}
+
+.game-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 25px 60px rgba(13, 27, 43, 0.25);
+}
+
+.game-card-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.8s ease;
+    filter: saturate(1.1);
+}
+
+.game-card:hover .game-card-bg {
+    transform: scale(1.15);
+}
+
+.game-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(13, 27, 43, 0.95) 0%,
+        rgba(13, 27, 43, 0.4) 50%,
+        transparent 100%
+    );
+    z-index: 1;
+}
+
+.game-card-body {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 30px;
+    z-index: 2;
+}
+
+.game-card-icon {
+    font-size: 38px;
+    margin-bottom: 12px;
+    display: block;
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.game-card:hover .game-card-icon {
+    transform: scale(1.2) rotate(-5deg);
+}
+
+.game-card-name {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.game-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.game-card-players {
+    font-size: 14px;
+    font-weight: 600;
+    color: #E6E7E4;
+}
+
+/* Point Live Anime */
+.game-card-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #2ecc71;
+    box-shadow: 0 0 10px #2ecc71;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+/* Badges Glass */
+.game-card-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 3;
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.game-card-badge.hot { background: rgba(231, 76, 60, 0.2); color: #ff7675; }
+.game-card-badge.new { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
+
+/* CTA Pop-up */
+.game-card-cta {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -20%);
+    opacity: 0;
+    z-index: 3;
+    background: #fff;
+    color: #1C263D;
+    border: none;
+    padding: 14px 28px;
+    border-radius: 100px;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.game-card:hover .game-card-cta {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+}
+
+.game-card.large { grid-column: span 2; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .games-grid { grid-template-columns: repeat(2, 1fr); }
+    .game-card.large { grid-column: span 2; }
+}
+
+@media (max-width: 600px) {
+    .games-grid { grid-template-columns: 1fr; }
+    .game-card.large { grid-column: span 1; }
+    .game-card { height: 280px; }
+}
