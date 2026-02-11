@@ -23,33 +23,33 @@ app.use(express.static('public'));
 app.use(express.json());
 //-----------------------------------------------------ROUTES----------------------------------------------------//
 //CONNEXION ET USER
-app.post('/register', async (req, res) => { 
-    const { loginValue, passwordValue } = req.body;
+app.post('/register', async (req, res) => {
+  const { loginValue, passwordValue } = req.body;
 
-    if (!loginValue || !passwordValue) {
-        return res.status(400).json({ success: false, message: 'Champs vides' });
-    }
+  if (!loginValue || !passwordValue) {
+    return res.status(400).json({ success: false, message: 'Champs vides' });
+  }
 
-    try {
-        const hash = await bcrypt.hash(passwordValue, 12);
+  try {
+    const hash = await bcrypt.hash(passwordValue, 12);
 
-        connection.query(
-            'INSERT INTO users (login, password) VALUES (?, ?)',
-            [loginValue, hash],
-            (err, results) => {
-                if (err) {
-                    // ← Doublon détecté
-                    if (err.code === 'ER_DUP_ENTRY') {
-                        return res.status(409).json({ success: false, message: 'Ce login est déjà pris' });
-                    }
-                    return res.status(500).json({ success: false, message: 'Erreur serveur' });
-                }
-                res.json({ success: true, message: 'Inscription réussie !', id: results.insertId });
-            }
-        );
-    } catch (err) {
-        res.status(500).json({ success: false, message: 'Erreur lors du hachage' });
-    }
+    connection.query(
+      'INSERT INTO users (login, password) VALUES (?, ?)',
+      [loginValue, hash],
+      (err, results) => {
+        if (err) {
+          // ← Doublon détecté
+          if (err.code === 'ER_DUP_ENTRY') {
+            return res.status(409).json({ success: false, message: 'Ce login est déjà pris' });
+          }
+          return res.status(500).json({ success: false, message: 'Erreur serveur' });
+        }
+        res.json({ success: true, message: 'Inscription réussie !', id: results.insertId });
+      }
+    );
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Erreur lors du hachage' });
+  }
 });
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM users', (err, results) => {
@@ -178,7 +178,7 @@ app.post('/acceptMatch', (req, res) => {
 
 app.get('/invitation', (req, res) => {
   connection.query(
-    'SELECT * FROM matchs ,users WHERE matchs.id_j1 = users.id OR matchs.id_j2 = users.id',
+    'select matchs.date_creation, matchs.id_j1,matchs.id_j2,matchs.id,matchs.categorie,matchs.statut, users1.login as Login1 , users2.login as login2  from users as users1 , users as users2, matchs WHERE   matchs.id_j1 = users1.id AND matchs.id_j2 = users2.id;',
     (err, results) => {
       if (err) {
         console.error('Erreur lors de la récupération de l\'invitation :', err);
