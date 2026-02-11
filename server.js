@@ -96,11 +96,7 @@ app.post('/createMatch', (req, res) => {
 });
 
 app.post('/finishMatch', (req, res) => {
-<<<<<<< Updated upstream
   const {id_j1, id_j2,gagnant,id_match} = req.body;
-=======
-  const { id_j1, id_j2, score_j1, score_j2, gagnant, id_match } = req.body;
->>>>>>> Stashed changes
   connection.query(
     'UPDATE matchs SET  gagnant = ?, status = "termine" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
     [gagnant, id_j1, id_j2, id_match],
