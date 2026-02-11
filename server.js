@@ -92,10 +92,10 @@ app.post('/createMatch', (req, res) => {
 });
 
 app.post('/finishMatch', (req, res) => {
-  const {id_j1, id_j2, score_j1, score_j2,gagnant,id_match} = req.body;
+  const {id_j1, id_j2,gagnant,id_match} = req.body;
   connection.query(
-    'UPDATE matchs SET score_j1 = ?, score_j2 = ?, gagnant = ?, status = "termine" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
-    [score_j1, score_j2, gagnant, id_j1, id_j2, id_match],
+    'UPDATE matchs SET  gagnant = ?, status = "termine" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
+    [gagnant, id_j1, id_j2, id_match],
     (err, results) => {
       if (err) {
         console.error('Erreur lors de la mise à jour du match dans la base de données :', err);
@@ -103,6 +103,37 @@ app.post('/finishMatch', (req, res) => {
         return;
       }
       res.json({ message: 'Match terminé avec succès !' });
+    }
+  )
+});
+app.post('/changeScoreJ1', (req, res) => {
+  const {id_j1, score_j1 ,id_match} = req.body;
+  connection.query(
+    'UPDATE matchs SET score_j1 = ? WHERE id = ?',
+    [score_j1, id_match],
+    (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la mise à jour du score du joueur 1 :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
+      res.json({ message: 'Score du joueur 1 mis à jour avec succès !' });
+    }
+  )
+});
+
+app.post('/changeScoreJ2', (req, res) => {
+  const {id_j2, score_j2 ,id_match} = req.body;
+  connection.query(
+    'UPDATE matchs SET score_j2 = ? WHERE id = ?',
+    [score_j2, id_match],
+    (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la mise à jour du score du joueur 2 :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
+      res.json({ message: 'Score du joueur 2 mis à jour avec succès !' });
     }
   )
 });
@@ -137,7 +168,7 @@ app.post('/acceptMatch', (req, res) => {
 
 app.get('/invitation', (req, res) => {
   connection.query(
-    'SELECT * FROM matchs',
+    'SELECT * FROM matchs ,users WHERE matchs.id_j1 = users.id OR matchs.id_j2 = users.id',
     (err, results) => {
       if (err) {
         console.error('Erreur lors de la récupération de l\'invitation :', err);
