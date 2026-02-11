@@ -84,7 +84,7 @@ app.post('/createMatch', (req, res) => {
   if (isNaN(player1_id) || isNaN(player2_id)) {
     return res.status(400).json({ message: 'IDs de joueurs invalides' });
   }
-  const query = 'INSERT INTO matchs (id_j1, id_j2, categorie, status, score_j1, score_j2) VALUES (?, ?, ?, "en attente", 0, 0)';
+  const query = 'INSERT INTO matchs (id_j1, id_j2, categorie, statut, score_j1, score_j2) VALUES (?, ?, ?, "en attente", 0, 0)';
 
   connection.query(query, [player1_id, player2_id, categorie], (err, results) => {
     if (err) {
@@ -98,7 +98,7 @@ app.post('/createMatch', (req, res) => {
 app.post('/finishMatch', (req, res) => {
   const {id_j1, id_j2,gagnant,id_match} = req.body;
   connection.query(
-    'UPDATE matchs SET  gagnant = ?, status = "termine" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
+    'UPDATE matchs SET  gagnant = ?, statut = "termine" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
     [gagnant, id_j1, id_j2, id_match],
     (err, results) => {
       if (err) {
@@ -145,7 +145,7 @@ app.post('/changeScoreJ2', (req, res) => {
 app.post('/refuseMatch', (req, res) => {
   const { id_j1, id_j2, id_match } = req.body;
   connection.query(
-    'UPDATE matchs SET status = "refuse" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
+    'UPDATE matchs SET statut = "refuse" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
     [id_j1, id_j2, id_match],
     (err, results) => {
       if (err) {
@@ -160,7 +160,7 @@ app.post('/refuseMatch', (req, res) => {
 app.post('/acceptMatch', (req, res) => {
   const { id_j1, id_j2, id_match } = req.body;
   connection.query(
-    'UPDATE matchs SET status = "en cours" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
+    'UPDATE matchs SET statut = "en cours" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
     [id_j1, id_j2, id_match],
     (err, results) => {
       if (err) {
