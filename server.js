@@ -3,11 +3,12 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql2');
 const path = require('path');
+const bcrypt = require('bcrypt');
 const connection = mysql.createConnection({
-  host: '172.29.18.127',
+  host: '172.29.18.112',
   user: 'matchUp',
   password: 'matchUp',
-  database: 'MatchUp'
+  database: 'matchUp'
 });
 
 connection.connect((err) => {
@@ -22,26 +23,33 @@ app.use(express.static('public'));
 app.use(express.json());
 //-----------------------------------------------------ROUTES----------------------------------------------------//
 //CONNEXION ET USER
-app.post('/register', (req, res) => {
-    const { login, password } = req.body; 
+app.post('/register', async (req, res) => { 
+    const { loginValue, passwordValue } = req.body;
 
-    if (!login || !password) {
+    if (!loginValue || !passwordValue) {
         return res.status(400).json({ success: false, message: 'Champs vides' });
     }
 
-    connection.query(
-        'INSERT INTO users (login, password) VALUES (?,?)',
-        [login, password],
-        (err, results) => {
-            if (err) {
-                console.error('Erreur SQL :', err);
-                res.status(500).json({ success: false, message: 'Erreur serveur ou login déjà pris' });
-                return;
+    try {
+        const hash = await bcrypt.hash(passwordValue, 12);
+
+        connection.query(
+            'INSERT INTO users (login, password) VALUES (?, ?)',
+            [loginValue, hash],
+            (err, results) => {
+                if (err) {
+                    // ← Doublon détecté
+                    if (err.code === 'ER_DUP_ENTRY') {
+                        return res.status(409).json({ success: false, message: 'Ce login est déjà pris' });
+                    }
+                    return res.status(500).json({ success: false, message: 'Erreur serveur' });
+                }
+                res.json({ success: true, message: 'Inscription réussie !', id: results.insertId });
             }
-            // IMPORTANT : on ajoute success: true pour le JS
-            res.json({ success: true, message: 'Inscription réussie !', id: results.insertId });
-        }
-    )
+        );
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Erreur lors du hachage' });
+    }
 });
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM users', (err, results) => {
@@ -54,23 +62,19 @@ app.get('/users', (req, res) => {
   });
 });
 
+// ✅ CORRECTION
 app.post('/connexion', (req, res) => {
-  console.log(req.body);
-  //on récupère le login et le password
   const { login, password } = req.body;
-  connection.query('SELECT * FROM users WHERE login = ? AND password = ?', [login, password], (err, results) => {
-    if (err) {
-      console.error('Erreur lors de la vérification des identifiants :', err);
-      res.status(500).json({ message: 'Erreur serveur' });
-      return;
-    }
-    if (results.length === 0) {
-      res.status(401).json({ message: 'Identifiants invalides' });
-      return;
-    }
-    // Identifiants valides 
-    //renvoi les informations du user
-    res.json({ message: 'Connexion réussie !', user: results[0] });
+  connection.query('SELECT * FROM users WHERE login = ?', [login], async (err, results) => {
+    if (err) return res.status(500).json({ message: 'Erreur serveur' });
+    if (results.length === 0) return res.status(401).json({ message: 'Identifiants invalides' });
+
+    const user = results[0];
+    const match = await bcrypt.compare(password, user.password); // ← manquait !
+
+    if (!match) return res.status(401).json({ message: 'Identifiants invalides' });
+
+    res.json({ message: 'Connexion réussie !', user });
   });
 });
 
@@ -84,7 +88,7 @@ app.post('/createMatch', (req, res) => {
   if (isNaN(player1_id) || isNaN(player2_id)) {
     return res.status(400).json({ message: 'IDs de joueurs invalides' });
   }
-  const query = 'INSERT INTO matchs (id_j1, id_j2, categorie, statut, score_j1, score_j2) VALUES (?, ?, ?, "en attente", 0, 0)';
+  const query = 'INSERT INTO matchs (id_j1, id_j2, categorie, score_j1, score_j2) VALUES (?, ?, ?, 0, 0)';
 
   connection.query(query, [player1_id, player2_id, categorie], (err, results) => {
     if (err) {
@@ -96,7 +100,7 @@ app.post('/createMatch', (req, res) => {
 });
 
 app.post('/finishMatch', (req, res) => {
-  const {id_j1, id_j2,gagnant,id_match} = req.body;
+  const { id_j1, id_j2, gagnant, id_match } = req.body;
   connection.query(
     'UPDATE matchs SET  gagnant = ?, statut = "termine" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
     [gagnant, id_j1, id_j2, id_match],
@@ -111,7 +115,7 @@ app.post('/finishMatch', (req, res) => {
   )
 });
 app.post('/changeScoreJ1', (req, res) => {
-  const {id_j1, score_j1 ,id_match} = req.body;
+  const { id_j1, score_j1, id_match } = req.body;
   connection.query(
     'UPDATE matchs SET score_j1 = ? WHERE id = ?',
     [score_j1, id_match],
@@ -127,7 +131,7 @@ app.post('/changeScoreJ1', (req, res) => {
 });
 
 app.post('/changeScoreJ2', (req, res) => {
-  const {id_j2, score_j2 ,id_match} = req.body;
+  const { id_j2, score_j2, id_match } = req.body;
   connection.query(
     'UPDATE matchs SET score_j2 = ? WHERE id = ?',
     [score_j2, id_match],
