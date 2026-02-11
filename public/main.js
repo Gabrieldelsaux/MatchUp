@@ -7,14 +7,14 @@ function closeAuth() { document.getElementById("authModal").style.display = "non
 function openMatchModal() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) { alert("Connecte-toi d'abord !"); return openAuth(); }
-    
+
     document.getElementById("matchModal").style.display = "block";
-    
+
     fetch('/users')
         .then(res => res.json())
         .then(users => {
             const select = document.getElementById("opponentSelect");
-            if(select) {
+            if (select) {
                 select.innerHTML = '<option value="">-- Choisir un adversaire --</option>';
                 users.forEach(u => {
                     if (Number(u.id) !== Number(user.id)) {
@@ -35,18 +35,18 @@ function repondreMatch(idMatch, action) {
     fetch(route, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             id_match: idMatch,
-            id_j2: user.id 
+            id_j2: user.id
         })
     })
-    .then(res => {
-        if(res.ok) {
-            alert(action === 'accept' ? "Match accepté ! Bonne chance." : "Match refusé.");
-            location.reload();
-        }
-    })
-    .catch(err => console.error("Erreur action:", err));
+        .then(res => {
+            if (res.ok) {
+                alert(action === 'accept' ? "Match accepté ! Bonne chance." : "Match refusé.");
+                location.reload();
+            }
+        })
+        .catch(err => console.error("Erreur action:", err));
 }
 
 // --- 2. LOGIQUE AU CHARGEMENT DU DOM ---
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <button onclick="repondreMatch(${m.id}, 'refuse')" style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:5px;">Refuser</button>
                                 </div>
                             </div>`;
-                    } 
+                    }
                     // Envoyé (Je suis Player 1)
                     else if (p1 === userId && m.status === "en attente") {
                         countSent++;
@@ -112,13 +112,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ loginValue: username, passwordValue: password }),
             })
-            .then(res => res.json())
-            .then(data => {
-                if(data.user) {
-                    localStorage.setItem("user", JSON.stringify(data.user));
-                    location.reload();
-                } else { alert("Erreur lors de l'inscription"); }
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.user) {
+                        localStorage.setItem("user", JSON.stringify(data.user));
+                        location.reload();
+                    } else { alert("Erreur lors de l'inscription"); }
+                });
         });
     }
     // --- B. CONNEXION ---
@@ -133,13 +133,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ login: username, password: password }),
             })
-            .then(res => res.json())
-            .then(data => {
-                if(data.user) {
-                    localStorage.setItem("user", JSON.stringify(data.user));
-                    location.reload();
-                } else { alert("Erreur identifiants"); }
-            });
+                .then(res => res.json())
+                .then(data => {
+                    if (data.user) {
+                        localStorage.setItem("user", JSON.stringify(data.user));
+                        location.reload();
+                    } else { alert("Erreur identifiants"); }
+                });
         });
     }
 
@@ -159,16 +159,25 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ player1_id: user.id, player2_id: oppId, categorie: game }),
             })
-            .then(res => {
-                if (res.ok) { 
-                    alert("🚀 Défi envoyé !"); 
-                    window.location.href = "matchs.html"; 
-                }
-            })
-            .catch(() => {
-                btnCreate.disabled = false;
-                btnCreate.innerText = "Lancer le défi";
-            });
+                // Dans ton bloc --- C. CRÉATION DE MATCH ---
+                .then(res => {
+                    if (res.ok) {
+                        alert("🚀 Défi envoyé !");
+                        window.location.href = "matchs.html";
+                    } else {
+                        // AJOUTE CECI : Si le serveur répond avec une erreur (ex: 500)
+                        alert("Erreur serveur (Base de données probablement injoignable)");
+                        btnCreate.disabled = false;
+                        btnCreate.innerText = "Lancer le défi";
+                    }
+                })
+                .catch((err) => {
+                    // Ceci s'exécute si la requête échoue complètement
+                    console.error(err);
+                    btnCreate.disabled = false;
+                    btnCreate.innerText = "Lancer le défi";
+                    alert("Impossible de contacter le serveur.");
+                });
         });
     }
 });
@@ -176,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const logoutBtn = document.getElementById("logoutBtn");
-    const loginBtnNav = document.querySelector(".nav-cta"); 
+    const loginBtnNav = document.querySelector(".nav-cta");
 
     if (user) {
         // État : CONNECTÉ
