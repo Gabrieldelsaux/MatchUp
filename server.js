@@ -23,22 +23,26 @@ app.use(express.json());
 //-----------------------------------------------------ROUTES----------------------------------------------------//
 //CONNEXION ET USER
 app.post('/register', (req, res) => {
-  const { loginValue, passwordValue } = req.body;
-  connection.query(
-    'INSERT INTO users (login, password) VALUES (?,?)',
-    [loginValue, passwordValue],
-    (err, results) => {
-      if (err) {
-        console.error('Erreur lors de l\'insertion dans la base de données :', err);
-        res.status(500).json({ message: 'Erreur serveur' });
-        return;
-      }
-      console.log('Insertion réussie, ID utilisateur :', results.insertId);
-      res.json({ message: 'Inscription réussie !', id: results.insertId });
-    }
-  )
-});
+    const { login, password } = req.body; 
 
+    if (!login || !password) {
+        return res.status(400).json({ success: false, message: 'Champs vides' });
+    }
+
+    connection.query(
+        'INSERT INTO users (login, password) VALUES (?,?)',
+        [login, password],
+        (err, results) => {
+            if (err) {
+                console.error('Erreur SQL :', err);
+                res.status(500).json({ success: false, message: 'Erreur serveur ou login déjà pris' });
+                return;
+            }
+            // IMPORTANT : on ajoute success: true pour le JS
+            res.json({ success: true, message: 'Inscription réussie !', id: results.insertId });
+        }
+    )
+});
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM users', (err, results) => {
     if (err) {
@@ -73,26 +77,30 @@ app.post('/connexion', (req, res) => {
 
 //MATCH ET INVITATION
 app.post('/createMatch', (req, res) => {
-    const player1_id = parseInt(req.body.player1_id);
-    const player2_id = parseInt(req.body.player2_id);
-    const categorie = req.body.categorie;
+  const player1_id = parseInt(req.body.player1_id);
+  const player2_id = parseInt(req.body.player2_id);
+  const categorie = req.body.categorie;
 
-    if (isNaN(player1_id) || isNaN(player2_id)) {
-        return res.status(400).json({ message: 'IDs de joueurs invalides' });
+  if (isNaN(player1_id) || isNaN(player2_id)) {
+    return res.status(400).json({ message: 'IDs de joueurs invalides' });
+  }
+  const query = 'INSERT INTO matchs (id_j1, id_j2, categorie, status, score_j1, score_j2) VALUES (?, ?, ?, "en attente", 0, 0)';
+
+  connection.query(query, [player1_id, player2_id, categorie], (err, results) => {
+    if (err) {
+      console.error('ERREUR SQL :', err.sqlMessage || err);
+      return res.status(500).json({ message: 'Erreur BDD : ' + err.sqlMessage });
     }
-    const query = 'INSERT INTO matchs (id_j1, id_j2, categorie, status, score_j1, score_j2) VALUES (?, ?, ?, "en attente", 0, 0)';
-    
-    connection.query(query, [player1_id, player2_id, categorie], (err, results) => {
-        if (err) {
-            console.error('ERREUR SQL :', err.sqlMessage || err);
-            return res.status(500).json({ message: 'Erreur BDD : ' + err.sqlMessage });
-        }
-        res.status(200).json({ message: 'Match créé !', id: results.insertId });
-    });
+    res.status(200).json({ message: 'Match créé !', id: results.insertId });
+  });
 });
 
 app.post('/finishMatch', (req, res) => {
+<<<<<<< Updated upstream
   const {id_j1, id_j2,gagnant,id_match} = req.body;
+=======
+  const { id_j1, id_j2, score_j1, score_j2, gagnant, id_match } = req.body;
+>>>>>>> Stashed changes
   connection.query(
     'UPDATE matchs SET  gagnant = ?, status = "termine" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
     [gagnant, id_j1, id_j2, id_match],
@@ -139,7 +147,7 @@ app.post('/changeScoreJ2', (req, res) => {
 });
 
 app.post('/refuseMatch', (req, res) => {
-  const {id_j1, id_j2,id_match} = req.body;
+  const { id_j1, id_j2, id_match } = req.body;
   connection.query(
     'UPDATE matchs SET status = "refuse" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
     [id_j1, id_j2, id_match],
@@ -150,10 +158,11 @@ app.post('/refuseMatch', (req, res) => {
         return;
       }
 
-    })});
+    })
+});
 
 app.post('/acceptMatch', (req, res) => {
-  const {id_j1, id_j2,id_match} = req.body;
+  const { id_j1, id_j2, id_match } = req.body;
   connection.query(
     'UPDATE matchs SET status = "en cours" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
     [id_j1, id_j2, id_match],
@@ -164,7 +173,8 @@ app.post('/acceptMatch', (req, res) => {
         return;
       }
 
-    })});
+    })
+});
 
 app.get('/invitation', (req, res) => {
   connection.query(
@@ -181,10 +191,10 @@ app.get('/invitation', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 app.get('/matchs', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'matchs.html'));
+  res.sendFile(path.join(__dirname, 'public', 'matchs.html'));
 });
 
 app.listen(3000, () => {

@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes Matchs - MatchUp</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Clash+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Clash+Display:wght@600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="matchs.css">
 </head>
+
 <body>
     <nav>
         <div class="logo">MatchUp</div>
@@ -49,20 +53,35 @@
                             </tr>
                         </thead>
                         <tbody id="history-body">
-                            </tbody>
+                        </tbody>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 
+    <template id="template-invitation-recue">
+        <div class="glass-card match-item">
+            <span class="invite-text"></span>
+            <button class="btn-accept">Accepter</button>
+            <button class="btn-refuse">Refuser</button>
+        </div>
+    </template>
+
+    <template id="template-invitation-envoyee">
+        <div class="glass-card match-item">
+            <span class="invite-text"></span>
+            <div class="status-waiting">🚀 En attente de réponse...</div>
+        </div>
+    </template>
+
     <footer>
         <div class="footer-bottom">
             &copy; 2026 MatchUp. Le terrain de jeu des champions.
         </div>
     </footer>
-    
-   <script src="main.js"></script> 
+
+    <script src="main.js"></script>
 </body>
 
 </html>

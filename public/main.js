@@ -1,15 +1,27 @@
-// --- 1. FONCTIONS GLOBALES (Accessibles partout) ---
+const monButton = document.getElementById("registerSubmit");
 
-// Gestion de l'affichage des Modales
+/**
+ * MATCHUP - MAIN JAVASCRIPT
+ * Regroupe la gestion de l'auth, des modales et des matchs.
+ */
+
+// --- 1. FONCTIONS GLOBALES (Accessibles via HTML) ---
+
+// Gestion des Modales
 function openAuth() { document.getElementById("authModal").style.display = "block"; }
 function closeAuth() { document.getElementById("authModal").style.display = "none"; }
+function closeMatchModal() { document.getElementById("matchModal").style.display = "none"; }
 
 function openMatchModal() {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) { alert("Connecte-toi d'abord !"); return openAuth(); }
+    if (!user) { 
+        alert("Connecte-toi d'abord !"); 
+        return openAuth(); 
+    }
 
     document.getElementById("matchModal").style.display = "block";
 
+    // Charger la liste des adversaires
     fetch('/users')
         .then(res => res.json())
         .then(users => {
@@ -17,54 +29,100 @@ function openMatchModal() {
             if (select) {
                 select.innerHTML = '<option value="">-- Choisir un adversaire --</option>';
                 users.forEach(u => {
+                    // On ne s'affiche pas soi-même dans la liste
                     if (Number(u.id) !== Number(user.id)) {
                         select.innerHTML += `<option value="${u.id}">${u.login}</option>`;
                     }
                 });
             }
-        });
+        })
+        .catch(err => console.error("Erreur chargement utilisateurs:", err));
 }
 
-function closeMatchModal() { document.getElementById("matchModal").style.display = "none"; }
-
-// Fonction pour Accepter ou Refuser un match
-function repondreMatch(idMatch, action) {
+// Action Accepter/Refuser
+function repondreMatch(idMatch, action, idJ1) {
     const route = action === 'accept' ? '/acceptMatch' : '/refuseMatch';
     const user = JSON.parse(localStorage.getItem("user"));
 
     fetch(route, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            id_match: idMatch,
-            id_j2: user.id
+        body: JSON.stringify({ 
+            id_match: idMatch, 
+            id_j1: idJ1, 
+            id_j2: user.id 
         })
     })
-        .then(res => {
-            if (res.ok) {
-                alert(action === 'accept' ? "Match accepté ! Bonne chance." : "Match refusé.");
-                location.reload();
-            }
-        })
-        .catch(err => console.error("Erreur action:", err));
+    .then(res => {
+        if (res.ok) {
+            alert(action === 'accept' ? "✅ Match accepté !" : "❌ Match refusé.");
+            location.reload();
+        } else {
+            alert("Erreur lors de la réponse au match.");
+        }
+    })
+    .catch(err => console.error("Erreur action match:", err));
 }
+
+// Déconnexion
+function logout() {
+    localStorage.removeItem("user");
+    window.location.href = "index.html";
+}
+
+
+
+//--- Crée un compte ---
+if (monButton) {
+    monButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        const username = document.getElementById("usernameInput").value;
+        const password = document.getElementById("passwordInput").value;
+
+        fetch("/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ loginValue: username, passwordValue: password }),
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.message) {
+                alert("Compte créé avec succès ! Tu peux maintenant te connecter.");
+                closeAuth();
+            } else {
+                alert("Erreur lors de la création du compte : " + data.message);
+            }
+        });
+    } 
+)};
 
 // --- 2. LOGIQUE AU CHARGEMENT DU DOM ---
 document.addEventListener("DOMContentLoaded", () => {
     console.log("MatchUp JS opérationnel");
 
     const user = JSON.parse(localStorage.getItem("user"));
+    const logoutBtn = document.getElementById("logoutBtn");
+    const loginBtnNav = document.querySelector(".nav-cta");
+
+    // --- A. GESTION DE L'INTERFACE UTILISATEUR (NAVBAR) ---
+    if (user) {
+        if (loginBtnNav) loginBtnNav.style.display = "none";
+        if (logoutBtn) logoutBtn.style.display = "inline-block";
+    } else {
+        if (loginBtnNav) loginBtnNav.style.display = "inline-block";
+        if (logoutBtn) logoutBtn.style.display = "none";
+    }
+
+    // --- B. GESTION DES INVITATIONS (MATCHS.HTML) ---
     const receivedList = document.getElementById("received-invites");
     const sentList = document.getElementById("sent-invites");
 
-    // --- A. GESTION DE L'AFFICHAGE DES MATCHS ---
     if (receivedList && user) {
         fetch('/invitation')
             .then(res => res.json())
             .then(matchs => {
                 receivedList.innerHTML = "";
                 sentList.innerHTML = "";
-
                 let countReceived = 0;
                 let countSent = 0;
 
@@ -73,77 +131,60 @@ document.addEventListener("DOMContentLoaded", () => {
                     const p1 = Number(m.id_j1);
                     const p2 = Number(m.id_j2);
 
-                    // Reçu (Je suis Player 2)
+                    // Cas 1 : Invitation reçue (Je suis J2)
                     if (p2 === userId && m.status === "en attente") {
                         countReceived++;
-                        receivedList.innerHTML += `
-                            <div class="glass-card match-item" style="padding:15px; margin-bottom:10px; border-left: 4px solid #00d4ff; background: rgba(255,255,255,0.03);">
-                                <span>🎮 <b>${m.categorie.toUpperCase()}</b> de Joueur #${m.id_j1}</span>
-                                <div style="margin-top:10px;">
-                                    <button onclick="repondreMatch(${m.id}, 'accept')" style="background:#2ecc71; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">Accepter</button>
-                                    <button onclick="repondreMatch(${m.id}, 'refuse')" style="background:#e74c3c; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; margin-left:5px;">Refuser</button>
-                                </div>
-                            </div>`;
-                    }
-                    // Envoyé (Je suis Player 1)
+                        const template = document.getElementById("template-invitation-recue");
+                        if (template) {
+                            const clone = template.content.cloneNode(true);
+                            clone.querySelector(".invite-text").innerHTML = `🎮 <b>${m.categorie.toUpperCase()}</b> de Joueur #${m.id_j1}`;
+                            clone.querySelector(".btn-accept").onclick = () => repondreMatch(m.id, 'accept', m.id_j1);
+                            clone.querySelector(".btn-refuse").onclick = () => repondreMatch(m.id, 'refuse', m.id_j1);
+                            receivedList.appendChild(clone);
+                        }
+                    } 
+                    // Cas 2 : Défi envoyé (Je suis J1)
                     else if (p1 === userId && m.status === "en attente") {
                         countSent++;
-                        sentList.innerHTML += `
-                            <div class="glass-card match-item" style="padding:15px; margin-bottom:10px; border-left: 4px solid #ff007a; background: rgba(255,255,255,0.03);">
-                                <span>🚀 <b>${m.categorie.toUpperCase()}</b> envoyé à Joueur #${m.id_j2}</span>
-                                <div style="font-size:0.8em; opacity:0.6; margin-top:5px;">En attente de réponse...</div>
-                            </div>`;
+                        const template = document.getElementById("template-invitation-envoyee");
+                        if (template) {
+                            const clone = template.content.cloneNode(true);
+                            clone.querySelector(".invite-text").innerHTML = `🚀 <b>${m.categorie.toUpperCase()}</b> envoyé à Joueur #${m.id_j2}`;
+                            sentList.appendChild(clone);
+                        }
                     }
                 });
 
                 if (countReceived === 0) receivedList.innerHTML = "<p style='opacity:0.5;'>Aucune invitation reçue.</p>";
                 if (countSent === 0) sentList.innerHTML = "<p style='opacity:0.5;'>Aucun défi envoyé.</p>";
-            });
-    }
-    // --- CREATION DE COMPTE ---
-    const btnSignup = document.getElementById("registerSubmit");
-    if (btnSignup) {
-        btnSignup.addEventListener("click", (e) => {
-            e.preventDefault();
-            const username = document.getElementById("usernameInput").value;
-            const password = document.getElementById("passwordInput").value;
-            fetch("/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ loginValue: username, passwordValue: password }),
             })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.user) {
-                        localStorage.setItem("user", JSON.stringify(data.user));
-                        location.reload();
-                    } else { alert("Erreur lors de l'inscription"); }
-                });
-        });
+            .catch(err => console.error("Erreur invitations:", err));
     }
-    // --- B. CONNEXION ---
+
+    // --- C. CONNEXION (LOGIN) ---
     const btnLogin = document.getElementById("loginBtn");
     if (btnLogin) {
         btnLogin.addEventListener("click", (e) => {
             e.preventDefault();
             const username = document.getElementById("loginUsernameInput").value;
             const password = document.getElementById("loginPasswordInput").value;
+
             fetch("/connexion", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ login: username, password: password }),
             })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.user) {
-                        localStorage.setItem("user", JSON.stringify(data.user));
-                        location.reload();
-                    } else { alert("Erreur identifiants"); }
-                });
+            .then(res => res.json())
+            .then(data => {
+                if (data.user) {
+                    localStorage.setItem("user", JSON.stringify(data.user));
+                    location.reload();
+                } else { alert("Identifiants incorrects"); }
+            });
         });
     }
 
-    // --- C. CRÉATION DE MATCH ---
+    // --- D. CRÉATION DE MATCH ---
     const btnCreate = document.getElementById("createMatchBtn");
     if (btnCreate) {
         btnCreate.addEventListener("click", () => {
@@ -159,47 +200,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ player1_id: user.id, player2_id: oppId, categorie: game }),
             })
-                // Dans ton bloc --- C. CRÉATION DE MATCH ---
-                .then(res => {
-                    if (res.ok) {
-                        alert("🚀 Défi envoyé !");
-                        window.location.href = "matchs.html";
-                    } else {
-                        // AJOUTE CECI : Si le serveur répond avec une erreur (ex: 500)
-                        alert("Erreur serveur (Base de données probablement injoignable)");
-                        btnCreate.disabled = false;
-                        btnCreate.innerText = "Lancer le défi";
-                    }
-                })
-                .catch((err) => {
-                    // Ceci s'exécute si la requête échoue complètement
-                    console.error(err);
+            .then(res => {
+                if (res.ok) {
+                    alert("🚀 Défi envoyé !");
+                    window.location.href = "matchs.html";
+                } else {
                     btnCreate.disabled = false;
                     btnCreate.innerText = "Lancer le défi";
-                    alert("Impossible de contacter le serveur.");
-                });
+                }
+            })
+            .catch(() => {
+                btnCreate.disabled = false;
+                btnCreate.innerText = "Lancer le défi";
+            });
         });
     }
 });
-
-document.addEventListener("DOMContentLoaded", () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    const logoutBtn = document.getElementById("logoutBtn");
-    const loginBtnNav = document.querySelector(".nav-cta");
-
-    if (user) {
-        // État : CONNECTÉ
-        if (loginBtnNav) loginBtnNav.style.display = "none";    // Cache Connexion
-        if (logoutBtn) logoutBtn.style.display = "inline-block"; // Montre Déconnexion
-    } else {
-        // État : DÉCONNECTÉ
-        if (loginBtnNav) loginBtnNav.style.display = "inline-block"; // Montre Connexion
-        if (logoutBtn) logoutBtn.style.display = "none";             // Cache Déconnexion
-    }
-});
-
-// N'oublie pas la fonction logout
-function logout() {
-    localStorage.removeItem("user");
-    window.location.href = "index.html"; // Redirige et rafraîchit
-}
