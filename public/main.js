@@ -130,7 +130,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 matchs.forEach(m => {
                     const userId = Number(user.id);
-                    const nom = user.login;
+                    const j1 = m.Login1;
+                    const j2 = m.login2;
                     const p1 = Number(m.id_j1);
                     const p2 = Number(m.id_j2);
 
@@ -140,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         const template = document.getElementById("template-invitation-recue");
                         if (template) {
                             const clone = template.content.cloneNode(true);
-                            clone.querySelector(".invite-text").innerHTML = `🎮 <b>${m.categorie.toUpperCase()}</b> de ${nom}`;
+                            clone.querySelector(".invite-text").innerHTML = `🎮 <b>${j1}</b> vous a invité à jouer à ${m.categorie.toUpperCase()}`;
                             clone.querySelector(".btn-accept").onclick = () => repondreMatch(m.id, 'accept', m.id_j1);
                             clone.querySelector(".btn-refuse").onclick = () => repondreMatch(m.id, 'refuse', m.id_j1);
                             receivedList.appendChild(clone);
@@ -152,7 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         const template = document.getElementById("template-invitation-envoyee");
                         if (template) {
                             const clone = template.content.cloneNode(true);
-                            clone.querySelector(".invite-text").innerHTML = `🚀 <b>${m.categorie.toUpperCase()}</b> envoyé à ${nom}`;
+                            clone.querySelector(".invite-text").innerHTML = `🚀  vous avez invité <b>${j2}</b> à joué a ${m.categorie.toUpperCase()}`;
                             sentList.appendChild(clone);
                         }
                     }
