@@ -210,7 +210,22 @@ nav {
     background: #eecaca;
     color: #ff4b4b;
     border: 1.5px solid #ff4b4b;
+<<<<<<< Updated upstream
     text-transform: uppercase;
+=======
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+#logoutBtn:hover {
+    background: #ff4b4b;
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 75, 75, 0.3);
+>>>>>>> Stashed changes
 }
 
 #logoutBtn:hover {
@@ -318,33 +333,23 @@ nav {
     animation: float 3s ease-in-out infinite;
 }
 
+<<<<<<< Updated upstream
+=======
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+>>>>>>> Stashed changes
 .card-1 {
     top: 50px;
     left: 0;
     width: 200px;
     animation-delay: 0s;
-}
-
-.card-2 {
-    top: 150px;
-    right: 50px;
-    width: 180px;
-    animation-delay: 0.5s;
-}
-
-.card-3 {
-    bottom: 100px;
-    left: 80px;
-    width: 220px;
-    animation-delay: 1s;
-}
-
-.card-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: var(--gradient);
-    margin-bottom: 12px;
 }
 
 .match-info {
@@ -392,6 +397,7 @@ nav {
     text-align: center;
 }
 
+<<<<<<< Updated upstream
 /* ===== SECTION JEUX - CARTES ===== */
 .games-section {
     padding: 100px 60px;
@@ -770,19 +776,75 @@ nav {
 
 /* ===== FEATURES SECTION ===== */
 .features {
-    padding: 100px 60px;
-    background: #FCFCFB;
+=======
+/* Background decorations */
+.bg-shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.6;
+    filter: blur(80px);
 }
 
-.section-title {
+.shape-1 {
+    width: 400px;
+    height: 400px;
+    background: rgba(67, 91, 123, 0.15);
+    top: -100px;
+    right: -100px;
+}
+
+.shape-2 {
+    width: 350px;
+    height: 350px;
+    background: rgba(124, 144, 173, 0.15);
+    bottom: -100px;
+    left: -100px;
+}
+
+/* ===== SECTION JEUX - DESIGN PREMIUM AMÉLIORÉ ===== */
+.games-section {
+>>>>>>> Stashed changes
+    padding: 100px 60px;
+    background: #F5F5F3;
+    position: relative;
+}
+
+.games-label {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--secondary);
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: labelSlideDown 0.6s ease forwards;
+}
+
+@keyframes labelSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.games-title {
     font-family: 'Clash Display', sans-serif;
-    font-size: 48px;
+    font-size: 52px;
     font-weight: 700;
     text-align: center;
+    color: var(--text);
+    letter-spacing: -2px;
     margin-bottom: 60px;
-    letter-spacing: -1px;
+    opacity: 0;
+    animation: labelSlideDown 0.6s 0.1s ease forwards;
 }
 
+<<<<<<< Updated upstream
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -848,10 +910,14 @@ nav {
     font-family: 'Clash Display', sans-serif;
     font-size: 56px;
     font-weight: 700;
+=======
+.games-title span {
+>>>>>>> Stashed changes
     background: var(--gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+<<<<<<< Updated upstream
     margin-bottom: 8px;
 }
 
@@ -864,22 +930,291 @@ nav {
 .cta-section {
     padding: 120px 60px;
     text-align: center;
+=======
+>>>>>>> Stashed changes
     position: relative;
+}
+
+/* Ligne animée sous le titre */
+.games-title span::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: var(--gradient);
+    border-radius: 2px;
+    animation: lineExpand 0.8s 0.4s ease forwards;
+}
+
+@keyframes lineExpand {
+    to {
+        width: 100%;
+    }
+}
+
+/* Grille de cartes */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+    opacity: 0;
+    animation: fadeIn 0.8s 0.3s ease forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Carte individuelle */
+.game-card {
+    position: relative;
+    height: 300px;
+    border-radius: 28px;
     overflow: hidden;
+    cursor: pointer;
+    border: 1px solid rgba(28, 38, 61, 0.1);
+    box-shadow: 0 8px 25px rgba(13, 27, 43, 0.08);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: white;
 }
 
-.cta-section h2 {
+/* Effet de survol prononcé */
+.game-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 25px 60px rgba(13, 27, 43, 0.2),
+                0 0 0 1px rgba(67, 91, 123, 0.1);
+}
+
+/* Image de fond */
+.game-card-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: brightness(0.9) saturate(1.1);
+}
+
+.game-card:hover .game-card-bg {
+    transform: scale(1.1);
+    filter: brightness(1) saturate(1.2);
+}
+
+/* Overlay dégradé pour lisibilité */
+.game-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+        rgba(13, 27, 43, 0.9) 0%,
+        rgba(13, 27, 43, 0.4) 50%,
+        rgba(13, 27, 43, 0.1) 100%);
+    transition: background 0.4s ease;
+    z-index: 1;
+}
+
+.game-card:hover .game-card-overlay {
+    background: linear-gradient(to top,
+        rgba(67, 91, 123, 0.95) 0%,
+        rgba(67, 91, 123, 0.5) 50%,
+        rgba(67, 91, 123, 0.15) 100%);
+}
+
+/* Contenu texte */
+.game-card-body {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 28px 30px;
+    z-index: 2;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.game-card:hover .game-card-body {
+    transform: translateY(-6px);
+}
+
+.game-card-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+    display: block;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.game-card:hover .game-card-icon {
+    transform: scale(1.15) rotate(-5deg);
+}
+
+.game-card-name {
     font-family: 'Clash Display', sans-serif;
-    font-size: 56px;
+    font-size: 26px;
     font-weight: 700;
-    margin-bottom: 24px;
-    letter-spacing: -1px;
+    color: #fff;
+    letter-spacing: -0.5px;
+    display: block;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-.cta-section p {
-    font-size: 20px;
-    color: #7C90AD;
-    margin-bottom: 40px;
+.game-card.large .game-card-name {
+    font-size: 30px;
+}
+
+.game-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.game-card-players {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(230, 231, 228, 0.85);
+}
+
+/* Point Live Animé */
+.game-card-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2ecc71;
+    box-shadow: 0 0 12px #2ecc71;
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.6;
+        transform: scale(1.3);
+    }
+}
+
+.game-card-status {
+    font-size: 12px;
+    font-weight: 700;
+    color: #2ecc71;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(46, 204, 113, 0.4);
+}
+
+/* Badge coin supérieur */
+.game-card-badge {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    z-index: 3;
+    background: rgba(230, 231, 228, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(230, 231, 228, 0.3);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 50px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    animation: badgePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.game-card-badge.hot {
+    background: rgba(231, 76, 60, 0.35);
+    border-color: rgba(255, 100, 100, 0.4);
+    color: #fff;
+}
+
+.game-card-badge.new {
+    background: rgba(241, 196, 15, 0.35);
+    border-color: rgba(255, 220, 50, 0.4);
+    color: #fff;
+}
+
+/* Bouton "Lancer un défi" qui apparaît au hover */
+.game-card-cta {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+    z-index: 3;
+    background: rgba(230, 231, 228, 0.25);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid rgba(230, 231, 228, 0.6);
+    color: #fff;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 14px 32px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.game-card:hover .game-card-cta {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.game-card-cta:hover {
+    transform: translate(-50%, -50%) scale(1.08);
+    background: rgba(230, 231, 228, 0.35);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.game-card-cta:active {
+    transform: translate(-50%, -50%) scale(0.95);
+}
+
+/* Grande carte (prend 2 colonnes) */
+.game-card.large {
+    grid-column: span 2;
+    height: 360px;
+}
+
+/* Animation en cascade pour les cartes */
+.game-card:nth-child(1) { animation: cardSlideIn 0.5s 0.1s ease backwards; }
+.game-card:nth-child(2) { animation: cardSlideIn 0.5s 0.2s ease backwards; }
+.game-card:nth-child(3) { animation: cardSlideIn 0.5s 0.3s ease backwards; }
+.game-card:nth-child(4) { animation: cardSlideIn 0.5s 0.4s ease backwards; }
+.game-card:nth-child(5) { animation: cardSlideIn 0.5s 0.5s ease backwards; }
+.game-card:nth-child(6) { animation: cardSlideIn 0.5s 0.6s ease backwards; }
+
+@keyframes cardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===== FOOTER ===== */
@@ -889,50 +1224,6 @@ footer {
     padding: 60px 60px 30px;
 }
 
-.footer-content {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 60px;
-    max-width: 1200px;
-    margin: 0 auto 40px;
-}
-
-.footer-brand {
-    font-family: 'Clash Display', sans-serif;
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 16px;
-}
-
-.footer-desc {
-    color: rgba(230, 231, 228, 0.7);
-    line-height: 1.6;
-}
-
-.footer-links h4 {
-    font-family: 'Clash Display', sans-serif;
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-.footer-links ul {
-    list-style: none;
-}
-
-.footer-links li {
-    margin-bottom: 12px;
-}
-
-.footer-links a {
-    color: rgba(230, 231, 228, 0.7);
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.footer-links a:hover {
-    color: #E6E7E4;
-}
-
 .footer-bottom {
     text-align: center;
     padding-top: 30px;
@@ -940,6 +1231,7 @@ footer {
     color: rgba(230, 231, 228, 0.7);
 }
 
+<<<<<<< Updated upstream
 /* ===== BACKGROUND DECORATIONS ===== */
 .bg-shape {
     position: absolute;
@@ -965,6 +1257,9 @@ footer {
 }
 
 /* ===== AUTH MODAL ===== */
+=======
+/* Style de la Popup */
+>>>>>>> Stashed changes
 .modal {
     display: none;
     position: fixed;
@@ -1053,11 +1348,21 @@ footer {
 
 .popup_match h2 {
     color: #fff;
+<<<<<<< Updated upstream
+=======
     margin-bottom: 20px;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
+.form-group {
+>>>>>>> Stashed changes
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+<<<<<<< Updated upstream
 /* ===== FORMULAIRE CRÉER UN MATCH ===== */
 .form-group {
     margin-bottom: 20px;
@@ -1288,6 +1593,35 @@ footer {
 }
 
 /* ===== RESPONSIVE ===== */
+=======
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #E6E7E4;
+    font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .games-section {
+        padding: 70px 40px;
+    }
+
+    .games-title {
+        font-size: 38px;
+    }
+
+    .games-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .game-card.large {
+        grid-column: span 2;
+    }
+}
+
+>>>>>>> Stashed changes
 @media (max-width: 768px) {
     nav {
         padding: 20px 30px;
@@ -1318,6 +1652,7 @@ footer {
         flex-direction: column;
     }
 
+<<<<<<< Updated upstream
     .games-section {
         padding: 60px 30px;
     }
@@ -1363,11 +1698,19 @@ footer {
     .modal-content {
         width: 90%;
         padding: 20px;
+=======
+    .modal-content {
+        width: 90%;
+        margin: 20% auto;
+>>>>>>> Stashed changes
     }
 
     .auth-container {
         flex-direction: column;
+<<<<<<< Updated upstream
         gap: 20px;
+=======
+>>>>>>> Stashed changes
     }
 
     .divider {
@@ -1377,16 +1720,36 @@ footer {
 }
 
 @media (max-width: 600px) {
+<<<<<<< Updated upstream
     .games-grid {
         grid-template-columns: 1fr;
     }
 
     .game-card {
         height: 280px;
+=======
+    .games-section {
+        padding: 50px 20px;
+    }
+
+    .games-title {
+        font-size: 32px;
+        margin-bottom: 40px;
+    }
+
+    .games-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .game-card {
+        height: 260px;
+>>>>>>> Stashed changes
     }
 
     .game-card.large {
         grid-column: span 1;
+<<<<<<< Updated upstream
     }
 
     .btn-accept,
@@ -1400,5 +1763,20 @@ footer {
     .match-item {
         flex-direction: column;
         align-items: flex-start;
+=======
+        height: 280px;
+    }
+
+    .game-card-body {
+        padding: 22px 24px;
+    }
+
+    .game-card-name {
+        font-size: 22px;
+    }
+
+    .game-card.large .game-card-name {
+        font-size: 24px;
+>>>>>>> Stashed changes
     }
 }
