@@ -21,7 +21,6 @@ function closeMatchModal() {
 function openMatchModal() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
-        alert("Connecte-toi d'abord !");
         return openAuth();
     }
 
@@ -51,7 +50,7 @@ function repondreMatch(idMatch, action, idJ1) {
     const route = action === 'accept' ? '/acceptMatch' : '/refuseMatch';
     const user = JSON.parse(localStorage.getItem("user"));
 
-    if (!user) return alert("Veuillez vous reconnecter.");
+    if (!user) return;
 
     fetch(route, {
         method: 'POST',
@@ -64,7 +63,6 @@ function repondreMatch(idMatch, action, idJ1) {
     })
         .then(res => {
             if (res.ok) {
-                alert(action === 'accept' ? "✅ Match accepté !" : "❌ Match refusé.");
                 // Actualisation efficace et rapide pour mettre à jour l'interface
                 window.location.reload();
             } else {
@@ -161,8 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             <div class="match-item">
                                 <span class="invite-text">🎮 <b>${j1}</b> vous a invité à jouer à ${m.categorie.toUpperCase()}</span>
                                 <div class="match-actions">
-                                    <button class="btn-accept" onclick="repondreMatch(${m.id},'accept', ${m.id_j1}); window.location.reload();">Accepter</button>
-                                    <button class="btn-refuse" onclick="repondreMatch(${m.id}, 'refuse', ${m.id_j1}); window.location.reload();">Refuser</button>
+                                    <button class="btn-accept" onclick="repondreMatch(${m.id},'accept', ${m.id_j1})">Accepter</button>
+                                    <button class="btn-refuse" onclick="repondreMatch(${m.id}, 'refuse', ${m.id_j1})">Refuser</button>
                                 </div>
                             </div>`;
                     }
@@ -180,59 +178,55 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (p1 === userId && m.statut === "en_cours") {
                         countmatchs++;
                         matchsHTML += `
-                            <div class="ongoing-matches-grid" id="ongoing-matches">
-                                <div class="match-card">
-                                    <div class="match-header">
-                                        <div class="player-info">
-                                            <div class="player-avatar">JD</div>
-                                            <div class="player-details">
-                                                <h3 class="player-name">${j2}</h3>
-                                                <span class="game-category">${m.categorie.toUpperCase()}</span>
-                                            </div>
-                                        </div>
-                                        <div class="match-status">
-                                            <span class="status-badge ongoing">En cours</span>
+                            <div class="match-card" data-match-id="${m.id}" data-opponent-id="${p2}">
+                                <div class="match-header">
+                                    <div class="player-info">
+                                        <div class="player-avatar">${j2.substring(0, 2).toUpperCase()}</div>
+                                        <div class="player-details">
+                                            <h3 class="player-name">${j2}</h3>
+                                            <span class="game-category">${m.categorie.toUpperCase()}</span>
                                         </div>
                                     </div>
-                                    <div class="match-result">
-                                        <label for="result-1">Résultat du match :</label>
-                                        <select id="result-1" class="result-select">
-                                            <option value="" selected disabled>-- Sélectionner --</option>
-                                            <option value="win">✅ Gagné</option>
-                                            <option value="loss">❌ Perdu</option>
-                                        </select>
+                                    <div class="match-status">
+                                        <span class="status-badge ongoing">En cours</span>
                                     </div>
-                                    <button class="btn-validate">Valider le résultat</button>
                                 </div>
+                                <div class="match-result">
+                                    <label for="result-${m.id}">Résultat du match :</label>
+                                    <select id="result-${m.id}" class="result-select">
+                                        <option value="" selected disabled>-- Sélectionner --</option>
+                                        <option value="win">✅ Gagné</option>
+                                        <option value="loss">❌ Perdu</option>
+                                    </select>
+                                </div>
+                                <button class="btn-validate">Valider le résultat</button>
                             </div>`;
                     } 
                     else if (p2 === userId && m.statut === "en_cours") {
                         countmatchs++;
                         matchsHTML += `
-                            <div class="ongoing-matches-grid" id="ongoing-matches">
-                                <div class="match-card">
-                                    <div class="match-header">
-                                        <div class="player-info">
-                                            <div class="player-avatar">JD</div>
-                                            <div class="player-details">
-                                                <h3 class="player-name">${j1}</h3>
-                                                <span class="game-category">${m.categorie.toUpperCase()}</span>
-                                            </div>
-                                        </div>
-                                        <div class="match-status">
-                                            <span class="status-badge ongoing">En cours</span>
+                            <div class="match-card" data-match-id="${m.id}" data-opponent-id="${p1}">
+                                <div class="match-header">
+                                    <div class="player-info">
+                                        <div class="player-avatar">${j1.substring(0, 2).toUpperCase()}</div>
+                                        <div class="player-details">
+                                            <h3 class="player-name">${j1}</h3>
+                                            <span class="game-category">${m.categorie.toUpperCase()}</span>
                                         </div>
                                     </div>
-                                    <div class="match-result">
-                                        <label for="result-1">Résultat du match :</label>
-                                        <select id="result-1" class="result-select">
-                                            <option value="" selected disabled>-- Sélectionner --</option>
-                                            <option value="win">✅ Gagné</option>
-                                            <option value="loss">❌ Perdu</option>
-                                        </select>
+                                    <div class="match-status">
+                                        <span class="status-badge ongoing">En cours</span>
                                     </div>
-                                    <button class="btn-validate">Valider le résultat</button>
                                 </div>
+                                <div class="match-result">
+                                    <label for="result-${m.id}">Résultat du match :</label>
+                                    <select id="result-${m.id}" class="result-select">
+                                        <option value="" selected disabled>-- Sélectionner --</option>
+                                        <option value="win">✅ Gagné</option>
+                                        <option value="loss">❌ Perdu</option>
+                                    </select>
+                                </div>
+                                <button class="btn-validate">Valider le résultat</button>
                             </div>`;
                     }
                 });
@@ -246,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(err => console.error("Erreur chargement invitations:", err));
     }
-updateInvitationsOnly();
+    updateInvitationsOnly();
     
 
     // --- D. CONNEXION (LOGIN) ---
@@ -278,7 +272,7 @@ updateInvitationsOnly();
         createMatchBtn.addEventListener("click", () => {
             const game = document.getElementById("gameSelect").value;
             const oppId = document.getElementById("opponentSelect").value;
-            if (!oppId) return alert("Choisis un adversaire !");
+            if (!oppId) return;
 
             createMatchBtn.disabled = true;
             createMatchBtn.innerText = "Envoi...";
@@ -290,17 +284,69 @@ updateInvitationsOnly();
             })
                 .then(res => {
                     if (res.ok) {
-                        alert("🚀 Défi envoyé !");
                         window.location.href = "matchs.html";
                     } else {
+                        alert("Erreur lors de la création du match.");
                         createMatchBtn.disabled = false;
                         createMatchBtn.innerText = "Lancer le défi";
                     }
                 })
                 .catch(() => {
+                    alert("Erreur réseau lors de la création du match.");
                     createMatchBtn.disabled = false;
                     createMatchBtn.innerText = "Lancer le défi";
                 });
+        });
+    }
+});
+
+
+// --- Valider le résultat du match ---
+document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("btn-validate")) {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user) {
+            return;
+        }
+
+        const matchCard = e.target.closest(".match-card");
+        const matchId = parseInt(matchCard.getAttribute("data-match-id"));
+        const opponentId = parseInt(matchCard.getAttribute("data-opponent-id"));
+        const resultSelect = matchCard.querySelector(".result-select");
+        const resultValue = resultSelect.value;
+
+        if (!resultValue) {
+            return;
+        }
+
+        // Déterminer le gagnant
+        const gagnant = resultValue === "win" ? user.id : opponentId;
+
+        console.log("Envoi au serveur:", {
+            id_match: matchId,
+            gagnant: gagnant
+        });
+
+        fetch('/finishMatch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id_match: matchId,
+                gagnant: gagnant
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Réponse serveur:", data);
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert("Erreur : " + (data.message || "Erreur lors de la validation"));
+            }
+        })
+        .catch(err => {
+            console.error("Erreur lors de la validation du résultat :", err);
+            alert("Erreur réseau lors de la validation.");
         });
     }
 });

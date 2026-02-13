@@ -5,9 +5,9 @@ const mysql = require('mysql2');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const connection = mysql.createConnection({
-  host: '172.29.18.112',
-  user: 'matchUp',
-  password: 'matchUp',
+  host: 'localhost',
+  user: 'MatchUp',
+  password: 'MatchUp',
   database: 'matchUp'
 });
 
@@ -100,20 +100,47 @@ app.post('/createMatch', (req, res) => {
 });
 
 app.post('/finishMatch', (req, res) => {
-  const { id_j1, id_j2, gagnant, id_match } = req.body;
+  const { id_match, gagnant } = req.body;
+  
+  console.log("Requête reçue:", { id_match, gagnant });
+  
+  if (!id_match || !gagnant) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'Paramètres manquants' 
+    });
+  }
+  
   connection.query(
-    'UPDATE matchs SET  gagnant = ?, statut = "termine" WHERE id_j1 = ? AND id_j2 = ? AND id = ?',
-    [gagnant, id_j1, id_j2, id_match],
+    'UPDATE matchs SET gagnant = ?, statut = "termine" WHERE id = ?',
+    [gagnant, id_match],
     (err, results) => {
       if (err) {
-        console.error('Erreur lors de la mise à jour du match dans la base de données :', err);
-        res.status(500).json({ message: 'Erreur serveur' });
-        return;
+        console.error('Erreur SQL:', err);
+        return res.status(500).json({ 
+          success: false, 
+          message: 'Erreur serveur' 
+        });
       }
-      res.json({ message: 'Match terminé avec succès !' });
+      
+      console.log("Résultat SQL:", results);
+      
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ 
+          success: false, 
+          message: 'Match non trouvé' 
+        });
+      }
+      
+      res.json({ 
+        success: true, 
+        message: 'Match terminé avec succès !',
+        affectedRows: results.affectedRows
+      });
     }
-  )
+  );
 });
+
 app.post('/changeScoreJ1', (req, res) => {
   const { id_j1, score_j1, id_match } = req.body;
   connection.query(
@@ -154,10 +181,9 @@ app.post('/refuseMatch', (req, res) => {
     (err, results) => {
       if (err) {
         console.error('Erreur lors de la mise à jour du match dans la base de données :', err);
-        res.status(500).json({ message: 'Erreur serveur' });
-        return;
+        return res.status(500).json({ success: false, message: 'Erreur serveur' });
       }
-
+      res.json({ success: true, message: 'Match refusé !' });
     })
 });
 
@@ -169,10 +195,9 @@ app.post('/acceptMatch', (req, res) => {
     (err, results) => {
       if (err) {
         console.error('Erreur lors de la mise à jour du match dans la base de données :', err);
-        res.status(500).json({ message: 'Erreur serveur' });
-        return;
+        return res.status(500).json({ success: false, message: 'Erreur serveur' });
       }
-
+      res.json({ success: true, message: 'Match accepté !' });
     })
 });
 
