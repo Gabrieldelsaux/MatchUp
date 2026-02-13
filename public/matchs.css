@@ -940,3 +940,77 @@ footer {
         text-align: center;
     }
 }
+
+/* ===== BOUTON REFRESH ===== */
+#refreshBtn {
+    position: fixed;
+    top: 140px;
+    left: 60px;
+    padding: 14px 24px;
+    background: var(--gradient);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(67, 91, 123, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#refreshBtn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(67, 91, 123, 0.4);
+}
+
+#refreshBtn:active {
+    transform: translateY(-2px) scale(0.98);
+}
+
+/* Animation de rotation pour l'emoji au hover */
+#refreshBtn:hover::before {
+    content: '🔄';
+    position: absolute;
+    left: 16px;
+    animation: rotate 0.6s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Variante alternative - Bouton plus subtil */
+#refreshBtn.subtle {
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    backdrop-filter: blur(10px);
+}
+
+#refreshBtn.subtle:hover {
+    background: var(--gradient);
+    color: white;
+    border-color: transparent;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #refreshBtn {
+        top: 120px;
+        left: 20px;
+        padding: 12px 20px;
+        font-size: 13px;
+    }
+}
