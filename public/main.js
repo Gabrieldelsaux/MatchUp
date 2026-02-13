@@ -159,9 +159,9 @@ function updateInvitationsOnly() {
                 if (p2 === userId && m.statut === "en_attente") {
                     countReceived++;
                     receivedHTML += `
-                        <div class="invite-card">
+                        <div class="match-item">
                             <span class="invite-text">🎮 <b>${j1}</b> vous a invité à jouer à ${m.categorie.toUpperCase()}</span>
-                            <div class="invite-btns">
+                            <div class="match-actions">
                                 <button class="btn-accept" onclick="repondreMatch(${m.id}, 'accept', ${m.id_j1})">Accepter</button>
                                 <button class="btn-refuse" onclick="repondreMatch(${m.id}, 'refuse', ${m.id_j1})">Refuser</button>
                             </div>
@@ -171,8 +171,9 @@ function updateInvitationsOnly() {
                 else if (p1 === userId && m.statut === "en_attente") {
                     countSent++;
                     sentHTML += `
-                        <div class="invite-card">
+                        <div class="match-item">
                             <span class="invite-text">🚀 Vous avez invité <b>${j2}</b> à jouer à ${m.categorie.toUpperCase()}</span>
+                            <div class="status-waiting">🚀 En attente de réponse...</div>
                         </div>`;
                 }
             });
