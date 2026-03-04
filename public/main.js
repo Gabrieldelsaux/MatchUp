@@ -327,7 +327,7 @@ document.addEventListener("click", (e) => {
                 // Utilise /getscore au lieu de /invitation
                 return fetch('/getscore').then(res => res.json());
             })
-            .then(scores => {
+            .then(scores => 
                 const match = scores.find(m => m.id === matchId);
                 
                 console.log("Score J1:", match.score_j1, "| Score J2:", match.score_j2);
@@ -350,7 +350,13 @@ document.addEventListener("click", (e) => {
                     window.location.reload();
                     return { success: false };
                 }
-            })
+
+                if (hasJ1 === hasJ2) {
+                    console.log("⚠️ Les deux joueurs ont validé le même résultat, vérifier les données !");
+                    alert("Veuillez vérifier les résultats saisis. Si le problème persiste, contactez le support.");
+                    window.location.reloard();
+                }
+            )
             .then(data => {
                 if (data && data.success) {
                     alert("Match terminé!");
