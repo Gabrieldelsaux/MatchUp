@@ -207,19 +207,23 @@ document.addEventListener("DOMContentLoaded", function() {
                 // ── Historique (matchs terminés) ──────────────────
                 if (m.statut === "termine" && (p1 === userId || p2 === userId)) {
                     countHistory++;
-                    var adversaireH = (p1 === userId) ? j2 : j1;
-
+                    var adversaireH   = (p1 === userId) ? j2 : j1;
                     var resultat      = "—";
                     var resultatClass = "";
+                    var isJ1          = (p1 === userId);
 
-                    // Debug : voir ce que contient m.gagnant
-                    console.log("Historique match " + m.id + " | gagnant:", m.gagnant, "| userId:", userId);
-
-                    if (m.gagnant !== null && m.gagnant !== undefined && m.gagnant !== "") {
-                        var gagnantId  = Number(m.gagnant);
-                        var userAGagne = (gagnantId === userId);
-                        resultat       = userAGagne ? "✅ Gagné" : "❌ Perdu";
-                        resultatClass  = userAGagne ? "result-win" : "result-loss";
+                    if (isJ1) {
+                        // On est joueur 1 : on lit score_j1
+                        if (m.score_j1) {
+                            resultat      = m.score_j1 === "gagné" ? "✅ Gagné" : "❌ Perdu";
+                            resultatClass = m.score_j1 === "gagné" ? "result-win" : "result-loss";
+                        }
+                    } else {
+                        // On est joueur 2 : on lit score_j2
+                        if (m.score_j2) {
+                            resultat      = m.score_j2 === "gagné" ? "✅ Gagné" : "❌ Perdu";
+                            resultatClass = m.score_j2 === "gagné" ? "result-win" : "result-loss";
+                        }
                     }
 
                     historyHTML +=
