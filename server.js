@@ -5,10 +5,10 @@ const mysql = require('mysql2');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const connection = mysql.createConnection({
-  host: '172.29.17.241',
+  host: '172.29.19.158',
   user: 'matchUp',
   password: 'matchUp',
-  database: 'MatchUp'
+  database: 'matchUp'
 });
 
 connection.connect((err) => {
@@ -102,75 +102,55 @@ app.post('/createMatch', (req, res) => {
 app.post('/finishMatch', (req, res) => {
   const { id_match, gagnant } = req.body;
   
-  console.log("Requête reçue:", { id_match, gagnant });
-  
-  if (!id_match || !gagnant) {
-    return res.status(400).json({ 
-      success: false, 
-      message: 'Paramètres manquants' 
-    });
-  }
-  
   connection.query(
-    'UPDATE matchs SET gagnant = ?, statut = "termine" WHERE id = ?',
+    'UPDATE matchs SET gagnant = CASE WHEN id_j1 = ? THEN "joueur_1" ELSE "joueur_2" END, statut = "termine" WHERE id = ?',
     [gagnant, id_match],
     (err, results) => {
       if (err) {
-        console.error('Erreur SQL:', err);
-        return res.status(500).json({ 
-          success: false, 
-          message: 'Erreur serveur' 
-        });
+        console.error('ERREUR SQL:', err.sqlMessage);
+        return res.status(500).json({ success: false, message: 'Erreur: ' + err.sqlMessage });
       }
-      
-      console.log("Résultat SQL:", results);
-      
-      if (results.affectedRows === 0) {
-        return res.status(404).json({ 
-          success: false, 
-          message: 'Match non trouvé' 
-        });
-      }
-      
-      res.json({ 
-        success: true, 
-        message: 'Match terminé avec succès !',
-        affectedRows: results.affectedRows
-      });
+      res.json({ success: true, message: 'Match terminé!' });
     }
   );
 });
 
 app.post('/changeScoreJ1', (req, res) => {
   const { id_j1, score_j1, id_match } = req.body;
+  
+  console.log("Requête changeScoreJ1:", { id_j1, score_j1, id_match });
+  
   connection.query(
     'UPDATE matchs SET score_j1 = ? WHERE id = ?',
     [score_j1, id_match],
     (err, results) => {
       if (err) {
-        console.error('Erreur lors de la mise à jour du score du joueur 1 :', err);
-        res.status(500).json({ message: 'Erreur serveur' });
-        return;
+        console.error('❌ ERREUR SQL changeScoreJ1:', err.sqlMessage || err.message);
+        return res.status(500).json({ message: 'Erreur BDD J1 : ' + (err.sqlMessage || err.message) });
       }
-      res.json({ message: 'Score du joueur 1 mis à jour avec succès !' });
+      console.log("✅ Score J1 mis à jour - Rows affected:", results.affectedRows);
+      res.json({ message: 'Score J1 mis à jour !', affectedRows: results.affectedRows });
     }
-  )
+  );
 });
 
 app.post('/changeScoreJ2', (req, res) => {
   const { id_j2, score_j2, id_match } = req.body;
+  
+  console.log("Requête changeScoreJ2:", { id_j2, score_j2, id_match });
+  
   connection.query(
     'UPDATE matchs SET score_j2 = ? WHERE id = ?',
     [score_j2, id_match],
     (err, results) => {
       if (err) {
-        console.error('Erreur lors de la mise à jour du score du joueur 2 :', err);
-        res.status(500).json({ message: 'Erreur serveur' });
-        return;
+        console.error('❌ ERREUR SQL changeScoreJ2:', err.sqlMessage || err.message);
+        return res.status(500).json({ message: 'Erreur BDD J2 : ' + (err.sqlMessage || err.message) });
       }
-      res.json({ message: 'Score du joueur 2 mis à jour avec succès !' });
+      console.log("✅ Score J2 mis à jour - Rows affected:", results.affectedRows);
+      res.json({ message: 'Score J2 mis à jour !', affectedRows: results.affectedRows });
     }
-  )
+  );
 });
 
 app.post('/refuseMatch', (req, res) => {

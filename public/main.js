@@ -1,10 +1,3 @@
-/**
- * MATCHUP - MAIN JAVASCRIPT
- * Regroupe la gestion de l'auth, des modales, des matchs et des invitations.
- */
-
-// --- 1. FONCTIONS GLOBALES (Accessibles via HTML onclick) ---
-
 // Gestion des Modales
 function openAuth() { 
     document.getElementById("authModal").style.display = "block"; 
@@ -195,8 +188,8 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <label for="result-${m.id}">Résultat du match :</label>
                                     <select id="result-${m.id}" class="result-select">
                                         <option value="" selected disabled>-- Sélectionner --</option>
-                                        <option value="win">✅ Gagné</option>
-                                        <option value="loss">❌ Perdu</option>
+                                        <option value="win">gagné</option>
+                                        <option value="loss">perdu</option>
                                     </select>
                                 </div>
                                 <button class="btn-validate">Valider le résultat</button>
@@ -222,37 +215,13 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <label for="result-${m.id}">Résultat du match :</label>
                                     <select id="result-${m.id}" class="result-select">
                                         <option value="" selected disabled>-- Sélectionner --</option>
-                                        <option value="win">✅ Gagné</option>
-                                        <option value="loss">❌ Perdu</option>
+                                        <option value="win">gagné</option>
+                                        <option value="loss">perdu</option>
                                     </select>
                                 </div>
                                 <button class="btn-validate">Valider le résultat</button>
                             </div>`;
                     }
-
-                    btn-validate.addEventListener("click", (e) => {
-                        e.preventDefault();
-                        const resultSelect = matchCard.querySelector("result-select");
-                        if (p1 === userId && m.statut === "en_cours") {
-                            fetch('/changeScoreJ1', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    score_j1: resultSelect.value,
-                                    id_match: m.id
-                                })
-                            });
-                        } else if (p2 === userId && m.statut === "en_cours") {
-                            fetch('/changeScoreJ2', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    score_j2: resultSelect.value,
-                                    id_match: m.id
-                                })
-                            });
-                        }
-                    });
                 });
             
                 // Injection du contenu sans recharger la page
@@ -325,52 +294,82 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// --- Valider le résultat du match ---
 document.addEventListener("click", (e) => {
     if (e.target.classList.contains("btn-validate")) {
         const user = JSON.parse(localStorage.getItem("user"));
-        if (!user) {
-            return;
-        }
-
+        if (!user) return;
+        
         const matchCard = e.target.closest(".match-card");
         const matchId = parseInt(matchCard.getAttribute("data-match-id"));
         const opponentId = parseInt(matchCard.getAttribute("data-opponent-id"));
-        const resultSelect = matchCard.querySelector(".result-select");
-        const resultValue = resultSelect.value;
+        const resultValue = matchCard.querySelector(".result-select").value;
+        
+        console.log("=== ÉTAPE 1 ===", { matchId, resultValue });
+        if (!resultValue) return;
+        
+        fetch('/invitation')
+            .then(res => res.json())
+            .then(matchs => {
+                const matchInfo = matchs.find(m => m.id === matchId);
+                console.log("=== ÉTAPE 2 - Match info ===", matchInfo);
+                
+                const isPlayer1 = Number(matchInfo.id_j1) === Number(user.id);
+                const score = resultValue === "win" ? 'gagné' : 'perdu';
+                const scoreRoute = isPlayer1 ? '/changeScoreJ1' : '/changeScoreJ2';
+                const scoreBody = isPlayer1 
+                    ? { score_j1: score, id_match: matchId }
+                    : { score_j2: score, id_match: matchId };
 
-        if (!resultValue) {
-            return;
-        }
-
-        // Déterminer le gagnant
-        const gagnant = resultValue === "win" ? user.id : opponentId;
-
-        console.log("Envoi au serveur:", {
-            id_match: matchId,
-            gagnant: gagnant
-        });
-
-        fetch('/finishMatch', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                id_match: matchId,
-                gagnant: gagnant
+                console.log("=== ÉTAPE 3 - Envoi score ===", { scoreRoute, scoreBody });
+                
+                return fetch(scoreRoute, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(scoreBody)
+                });
             })
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log("Réponse serveur:", data);
-            if (data.success) {
-                window.location.reload();
-            } else {
-                alert("Erreur : " + (data.message || "Erreur lors de la validation"));
-            }
-        })
-        .catch(err => {
-            console.error("Erreur lors de la validation du résultat :", err);
-            alert("Erreur réseau lors de la validation.");
-        });
+            .then(() => {
+                console.log("=== ÉTAPE 4 - Refetch invitation ===");
+                return fetch('/invitation').then(res => res.json());
+            })
+            .then(matchsUpdated => {
+                console.log("=== ÉTAPE 5 - Données refetch ===", matchsUpdated);
+                
+                const match = matchsUpdated.find(m => m.id === matchId);
+                console.log("=== ÉTAPE 6 - Match trouvé ===", match);
+                console.log("Score J1:", match.score_j1, "| Score J2:", match.score_j2);
+                
+                const hasJ1 = match.score_j1 && String(match.score_j1).toLowerCase() !== 'null';
+                const hasJ2 = match.score_j2 && String(match.score_j2).toLowerCase() !== 'null';
+                
+                console.log("=== ÉTAPE 7 - Vérification ===", { hasJ1, hasJ2 });
+                
+                if (hasJ1 && hasJ2) {
+                    console.log("✅ LES DEUX SCORES PRÉSENTS - FINISHMATCH");
+                    const resultValue = matchCard.querySelector(".result-select").value;
+                    const gagnant = resultValue === "win" ? user.id : opponentId;
+                    
+                    return fetch('/finishMatch', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id_match: matchId, gagnant })
+                    }).then(res => res.json());
+                } else {
+                    console.log("❌ MANQUE UN SCORE - ATTENTE");
+                    alert("En attente de l'autre joueur...");
+                    return { success: false };
+                }
+            })
+            .then(data => {
+                console.log("=== ÉTAPE 8 - Réponse finale ===", data);
+                if (data && data.success) {
+                    alert("Match terminé!");
+                    window.location.reload();
+                }
+            })
+            .catch(err => {
+                console.error("ERREUR:", err);
+                alert("Erreur");
+            });
     }
 });
