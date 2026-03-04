@@ -19,7 +19,6 @@ function openMatchModal() {
 
     document.getElementById("matchModal").style.display = "block";
 
-    // Charger la liste des adversaires
     fetch('/users')
         .then(res => res.json())
         .then(users => {
@@ -27,7 +26,6 @@ function openMatchModal() {
             if (select) {
                 select.innerHTML = '<option value="">-- Choisir un adversaire --</option>';
                 users.forEach(u => {
-                    // On ne s'affiche pas soi-même dans la liste
                     if (Number(u.id) !== Number(user.id)) {
                         select.innerHTML += `<option value="${u.id}">${u.login}</option>`;
                     }
@@ -37,8 +35,7 @@ function openMatchModal() {
         .catch(err => console.error("Erreur chargement utilisateurs:", err));
 }
 
-
-// Action Accepter/Refuser (CORRIGÉE AVEC RELOAD)
+// Action Accepter/Refuser
 function repondreMatch(idMatch, action, idJ1) {
     const route = action === 'accept' ? '/acceptMatch' : '/refuseMatch';
     const user = JSON.parse(localStorage.getItem("user"));
@@ -56,7 +53,6 @@ function repondreMatch(idMatch, action, idJ1) {
     })
         .then(res => {
             if (res.ok) {
-                // Actualisation efficace et rapide pour mettre à jour l'interface
                 window.location.reload();
             } else {
                 alert("Erreur lors de la réponse au match.");
@@ -78,14 +74,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const user = JSON.parse(localStorage.getItem("user"));
 
-    // Éléments du DOM
     const logoutBtn = document.getElementById("logoutBtn");
     const loginBtnNav = document.querySelector(".nav-cta");
     const registerBtn = document.getElementById("registerSubmit");
     const loginBtn = document.getElementById("loginBtn");
     const createMatchBtn = document.getElementById("createMatchBtn");
 
-    // --- A. GESTION DE L'INSCRIPTION ---
+    // --- A. INSCRIPTION ---
     if (registerBtn) {
         registerBtn.addEventListener("click", (e) => {
             e.preventDefault();
@@ -109,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- B. GESTION DE L'INTERFACE UTILISATEUR (NAVBAR) ---
+    // --- B. NAVBAR ---
     if (user) {
         if (loginBtnNav) loginBtnNav.style.display = "none";
         if (logoutBtn) logoutBtn.style.display = "inline-block";
@@ -118,14 +113,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (logoutBtn) logoutBtn.style.display = "none";
     }
 
-    // 1. La fonction qui va chercher les données et met à jour uniquement le HTML
+    // --- C. CHARGEMENT INVITATIONS + MATCHS EN COURS + HISTORIQUE ---
     function updateInvitationsOnly() {
         const user = JSON.parse(localStorage.getItem("user"));
         const receivedList = document.getElementById("received-invites");
         const sentList = document.getElementById("sent-invites");
         const sentMatchs = document.getElementById("ongoing-matches");
 
-        // Si l'utilisateur n'est pas connecté ou si les div n'existent pas, on arrête
         if (!user || !receivedList || !sentList) return;
 
         fetch('/invitation')
@@ -145,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     const p1 = Number(m.id_j1);
                     const p2 = Number(m.id_j2);
 
-                    // Cas 1 : Reçues
+                    // Invitations reçues
                     if (p2 === userId && m.statut === "en_attente") {
                         countReceived++;
                         receivedHTML += `
@@ -157,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </div>
                             </div>`;
                     }
-                    // Cas 2 : Envoyées
+                    // Invitations envoyées
                     else if (p1 === userId && m.statut === "en_attente") {
                         countSent++;
                         sentHTML += `
@@ -167,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             </div>`;
                     }
 
-                    // si le match est en cours il va dans l'espace Matchs en cours 
+                    // Matchs en cours
                     if (p1 === userId && m.statut === "en_cours") {
                         countmatchs++;
                         matchsHTML += `
@@ -224,7 +218,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 });
             
-                // Injection du contenu sans recharger la page
                 if (sentMatchs) {
                     sentMatchs.innerHTML = countmatchs > 0 ? matchsHTML : "<p style='opacity:0.5;'>Aucun match en cours.</p>";
                 }
@@ -232,11 +225,65 @@ document.addEventListener("DOMContentLoaded", () => {
                 sentList.innerHTML = countSent > 0 ? sentHTML : "<p style='opacity:0.5;'>Aucun défi envoyé.</p>";
             })
             .catch(err => console.error("Erreur chargement invitations:", err));
-    }
-    updateInvitationsOnly();
-    
 
-    // --- D. CONNEXION (LOGIN) ---
+        // ✅ NOUVEAU : Chargement de l'historique des matchs terminés
+        loadHistory(user);
+    }
+
+    // ✅ NOUVELLE FONCTION : Historique des matchs terminés
+    function loadHistory(user) {
+        const historyBody = document.getElementById("history-body");
+        if (!historyBody || !user) return;
+
+        fetch('/invitation')
+            .then(res => res.json())
+            .then(matchs => {
+                const userId = Number(user.id);
+                // On filtre uniquement les matchs terminés où l'utilisateur participe
+                const termines = matchs.filter(m =>
+                    m.statut === "termine" &&
+                    (Number(m.id_j1) === userId || Number(m.id_j2) === userId)
+                );
+
+                if (termines.length === 0) {
+                    historyBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" style="opacity:0.5; text-align:center; padding: 20px;">
+                                Aucun match terminé pour l'instant.
+                            </td>
+                        </tr>`;
+                    return;
+                }
+
+                historyBody.innerHTML = termines.map(m => {
+                    const isJ1 = Number(m.id_j1) === userId;
+                    const adversaire = isJ1 ? m.login2 : m.Login1;
+
+                    // Détermine le résultat : gagné ou perdu
+                    let resultat = "—";
+                    let resultatClass = "";
+
+                    if (m.gagnant) {
+                        // La colonne gagnant contient 'joueur_1' ou 'joueur_2'
+                        const userAGagne = (isJ1 && m.gagnant === "joueur_1") || (!isJ1 && m.gagnant === "joueur_2");
+                        resultat = userAGagne ? "✅ Gagné" : "❌ Perdu";
+                        resultatClass = userAGagne ? "result-win" : "result-loss";
+                    }
+
+                    return `
+                        <tr>
+                            <td>${adversaire}</td>
+                            <td class="${resultatClass}">${resultat}</td>
+                            <td>${m.categorie ? m.categorie.toUpperCase() : "—"}</td>
+                        </tr>`;
+                }).join("");
+            })
+            .catch(err => console.error("Erreur chargement historique:", err));
+    }
+
+    updateInvitationsOnly();
+
+    // --- D. CONNEXION ---
     if (loginBtn) {
         loginBtn.addEventListener("click", (e) => {
             e.preventDefault();
@@ -294,6 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+// --- VALIDATION DU RÉSULTAT D'UN MATCH ---
 document.addEventListener("click", (e) => {
     if (e.target.classList.contains("btn-validate")) {
         const user = JSON.parse(localStorage.getItem("user"));
@@ -310,6 +358,8 @@ document.addEventListener("click", (e) => {
             .then(res => res.json())
             .then(matchs => {
                 const matchInfo = matchs.find(m => m.id === matchId);
+                if (!matchInfo) throw new Error("Match introuvable");
+
                 const isPlayer1 = Number(matchInfo.id_j1) === Number(user.id);
                 const score = resultValue === "win" ? 'gagné' : 'perdu';
                 const scoreRoute = isPlayer1 ? '/changeScoreJ1' : '/changeScoreJ2';
@@ -323,12 +373,10 @@ document.addEventListener("click", (e) => {
                     body: JSON.stringify(scoreBody)
                 });
             })
-            .then(() => {
-                // Utilise /getscore au lieu de /invitation
-                return fetch('/getscore').then(res => res.json());
-            })
-            .then(scores => 
+            .then(() => fetch('/getscore').then(res => res.json()))
+            .then(scores => {
                 const match = scores.find(m => m.id === matchId);
+                if (!match) throw new Error("Score introuvable");
                 
                 console.log("Score J1:", match.score_j1, "| Score J2:", match.score_j2);
                 
@@ -336,7 +384,16 @@ document.addEventListener("click", (e) => {
                 const hasJ2 = match.score_j2 && String(match.score_j2).toLowerCase() !== 'null';
                 
                 if (hasJ1 && hasJ2) {
-                    console.log("✅ Les deux ont validé!");
+                    // ✅ Les deux joueurs ont validé — on vérifie la cohérence
+                    if (match.score_j1 === match.score_j2) {
+                        // Les deux ont déclaré le même résultat (impossible : 2x gagné ou 2x perdu)
+                        console.log("⚠️ Résultats incohérents !");
+                        alert("Veuillez vérifier les résultats saisis. Si le problème persiste, contactez le support.");
+                        window.location.reload();
+                        return { success: false };
+                    }
+
+                    console.log("✅ Les deux ont validé !");
                     const gagnant = resultValue === "win" ? user.id : opponentId;
                     
                     return fetch('/finishMatch', {
@@ -344,25 +401,23 @@ document.addEventListener("click", (e) => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ id_match: matchId, gagnant })
                     }).then(res => res.json());
+
                 } else {
                     console.log("❌ En attente du second joueur");
                     alert("Résultat enregistré, en attente de l'autre joueur...");
                     window.location.reload();
                     return { success: false };
                 }
-
-                if (hasJ1 === hasJ2) {
-                    console.log("⚠️ Les deux joueurs ont validé le même résultat, vérifier les données !");
-                    alert("Veuillez vérifier les résultats saisis. Si le problème persiste, contactez le support.");
-                    window.location.reloard();
-                }
-            )
+            })    
             .then(data => {
                 if (data && data.success) {
-                    alert("Match terminé!");
+                    alert("Match terminé !");
                     window.location.reload();
                 }
             })
-            .catch(err => alert("Erreur"));
+            .catch(err => {
+                console.error("Erreur validation:", err);
+                alert("Erreur : " + err.message);
+            });
     }
 });
