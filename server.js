@@ -5,10 +5,10 @@ const mysql = require('mysql2');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'MatchUp',
-  password: 'MatchUp',
-  database: 'matchUp'
+  host: '172.29.17.241',
+  user: 'matchUp',
+  password: 'matchUp',
+  database: 'MatchUp'
 });
 
 connection.connect((err) => {
@@ -88,7 +88,7 @@ app.post('/createMatch', (req, res) => {
   if (isNaN(player1_id) || isNaN(player2_id)) {
     return res.status(400).json({ message: 'IDs de joueurs invalides' });
   }
-  const query = 'INSERT INTO matchs (id_j1, id_j2, categorie, score_j1, score_j2) VALUES (?, ?, ?, 0, 0)';
+  const query = 'INSERT INTO matchs (id_j1, id_j2, categorie) VALUES (?, ?, ?)';
 
   connection.query(query, [player1_id, player2_id, categorie], (err, results) => {
     if (err) {

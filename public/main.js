@@ -229,8 +229,32 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <button class="btn-validate">Valider le résultat</button>
                             </div>`;
                     }
-                });
 
+                    btn-validate.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        const resultSelect = matchCard.querySelector("result-select");
+                        if (p1 === userId && m.statut === "en_cours") {
+                            fetch('/changeScoreJ1', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    score_j1: resultSelect.value,
+                                    id_match: m.id
+                                })
+                            });
+                        } else if (p2 === userId && m.statut === "en_cours") {
+                            fetch('/changeScoreJ2', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    score_j2: resultSelect.value,
+                                    id_match: m.id
+                                })
+                            });
+                        }
+                    });
+                });
+            
                 // Injection du contenu sans recharger la page
                 if (sentMatchs) {
                     sentMatchs.innerHTML = countmatchs > 0 ? matchsHTML : "<p style='opacity:0.5;'>Aucun match en cours.</p>";
