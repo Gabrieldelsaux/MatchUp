@@ -73,6 +73,23 @@ function logout() {
 
 
 // ============================================================
+// FORMATAGE DE LA DATE
+// ============================================================
+
+function formatDate(dateStr) {
+    if (!dateStr) return "—";
+    var d = new Date(dateStr);
+    if (isNaN(d.getTime())) return "—";
+    var jour   = String(d.getDate()).padStart(2, '0');
+    var mois   = String(d.getMonth() + 1).padStart(2, '0');
+    var annee  = d.getFullYear();
+    var heures = String(d.getHours()).padStart(2, '0');
+    var min    = String(d.getMinutes()).padStart(2, '0');
+    return jour + '/' + mois + '/' + annee + ' ' + heures + 'h' + min;
+}
+
+
+// ============================================================
 // CHARGEMENT DU DOM
 // ============================================================
 
@@ -123,7 +140,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     // --- CHARGEMENT PRINCIPAL ---
-    // Charge invitations reçues/envoyées, matchs en cours ET historique
     function updateAll() {
         var currentUser = JSON.parse(localStorage.getItem("user"));
         if (!currentUser) return;
@@ -213,13 +229,11 @@ document.addEventListener("DOMContentLoaded", function() {
                     var isJ1          = (p1 === userId);
 
                     if (isJ1) {
-                        // On est joueur 1 : on lit score_j1
                         if (m.score_j1) {
                             resultat      = m.score_j1 === "gagné" ? "✅ Gagné" : "❌ Perdu";
                             resultatClass = m.score_j1 === "gagné" ? "result-win" : "result-loss";
                         }
                     } else {
-                        // On est joueur 2 : on lit score_j2
                         if (m.score_j2) {
                             resultat      = m.score_j2 === "gagné" ? "✅ Gagné" : "❌ Perdu";
                             resultatClass = m.score_j2 === "gagné" ? "result-win" : "result-loss";
@@ -231,6 +245,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             '<td>' + adversaireH + '</td>' +
                             '<td class="' + resultatClass + '">' + resultat + '</td>' +
                             '<td>' + (m.categorie ? m.categorie.toUpperCase() : "—") + '</td>' +
+                            '<td>' + formatDate(m.date_creation) + '</td>' +
                         '</tr>';
                 }
             });
@@ -259,7 +274,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (historyBody) {
                 historyBody.innerHTML = countHistory > 0
                     ? historyHTML
-                    : '<tr><td colspan="3" style="opacity:0.5; text-align:center; padding:20px;">Aucun match terminé pour l\'instant.</td></tr>';
+                    : '<tr><td colspan="4" style="opacity:0.5; text-align:center; padding:20px;">Aucun match terminé pour l\'instant.</td></tr>';
             }
         })
         .catch(err => console.error("Erreur chargement données:", err));
