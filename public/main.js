@@ -304,15 +304,12 @@ document.addEventListener("click", (e) => {
         const opponentId = parseInt(matchCard.getAttribute("data-opponent-id"));
         const resultValue = matchCard.querySelector(".result-select").value;
         
-        console.log("=== ÉTAPE 1 ===", { matchId, resultValue });
         if (!resultValue) return;
         
         fetch('/invitation')
             .then(res => res.json())
             .then(matchs => {
                 const matchInfo = matchs.find(m => m.id === matchId);
-                console.log("=== ÉTAPE 2 - Match info ===", matchInfo);
-                
                 const isPlayer1 = Number(matchInfo.id_j1) === Number(user.id);
                 const score = resultValue === "win" ? 'gagné' : 'perdu';
                 const scoreRoute = isPlayer1 ? '/changeScoreJ1' : '/changeScoreJ2';
@@ -320,8 +317,6 @@ document.addEventListener("click", (e) => {
                     ? { score_j1: score, id_match: matchId }
                     : { score_j2: score, id_match: matchId };
 
-                console.log("=== ÉTAPE 3 - Envoi score ===", { scoreRoute, scoreBody });
-                
                 return fetch(scoreRoute, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -329,24 +324,19 @@ document.addEventListener("click", (e) => {
                 });
             })
             .then(() => {
-                console.log("=== ÉTAPE 4 - Refetch invitation ===");
-                return fetch('/invitation').then(res => res.json());
+                // Utilise /getscore au lieu de /invitation
+                return fetch('/getscore').then(res => res.json());
             })
-            .then(matchsUpdated => {
-                console.log("=== ÉTAPE 5 - Données refetch ===", matchsUpdated);
+            .then(scores => {
+                const match = scores.find(m => m.id === matchId);
                 
-                const match = matchsUpdated.find(m => m.id === matchId);
-                console.log("=== ÉTAPE 6 - Match trouvé ===", match);
                 console.log("Score J1:", match.score_j1, "| Score J2:", match.score_j2);
                 
                 const hasJ1 = match.score_j1 && String(match.score_j1).toLowerCase() !== 'null';
                 const hasJ2 = match.score_j2 && String(match.score_j2).toLowerCase() !== 'null';
                 
-                console.log("=== ÉTAPE 7 - Vérification ===", { hasJ1, hasJ2 });
-                
                 if (hasJ1 && hasJ2) {
-                    console.log("✅ LES DEUX SCORES PRÉSENTS - FINISHMATCH");
-                    const resultValue = matchCard.querySelector(".result-select").value;
+                    console.log("✅ Les deux ont validé!");
                     const gagnant = resultValue === "win" ? user.id : opponentId;
                     
                     return fetch('/finishMatch', {
@@ -355,21 +345,18 @@ document.addEventListener("click", (e) => {
                         body: JSON.stringify({ id_match: matchId, gagnant })
                     }).then(res => res.json());
                 } else {
-                    console.log("❌ MANQUE UN SCORE - ATTENTE");
-                    alert("En attente de l'autre joueur...");
+                    console.log("❌ En attente du second joueur");
+                    alert("Résultat enregistré, en attente de l'autre joueur...");
+                    window.location.reload();
                     return { success: false };
                 }
             })
             .then(data => {
-                console.log("=== ÉTAPE 8 - Réponse finale ===", data);
                 if (data && data.success) {
                     alert("Match terminé!");
                     window.location.reload();
                 }
             })
-            .catch(err => {
-                console.error("ERREUR:", err);
-                alert("Erreur");
-            });
+            .catch(err => alert("Erreur"));
     }
 });

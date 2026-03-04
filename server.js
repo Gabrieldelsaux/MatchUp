@@ -194,6 +194,19 @@ app.get('/invitation', (req, res) => {
     }
   );
 });
+app.get('/getscore', (req, res) => {
+  connection.query(
+    'SELECT id, score_j1, score_j2 FROM matchs',
+    (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la récupération des scores :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
+      res.json(results);
+    }
+  );
+});
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
