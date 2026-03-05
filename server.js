@@ -183,7 +183,7 @@ app.post('/acceptMatch', (req, res) => {
 
 app.get('/invitation', (req, res) => {
   connection.query(
-    'select matchs.score_j1,score_j2 matchs.date_creation, matchs.id_j1,matchs.id_j2,matchs.id,matchs.categorie,matchs.statut, users1.login as Login1 , users2.login as login2  from users as users1 , users as users2, matchs WHERE   matchs.id_j1 = users1.id AND matchs.id_j2 = users2.id;',
+    'select matchs.score_j1, matchs.score_j2,matchs.date_creation , matchs.id_j1,matchs.id_j2,matchs.id,matchs.categorie,matchs.statut, users1.login as Login1 , users2.login as login2  from users as users1 , users as users2, matchs WHERE   matchs.id_j1 = users1.id AND matchs.id_j2 = users2.id;',
     (err, results) => {
       if (err) {
         console.error('Erreur lors de la récupération de l\'invitation :', err);

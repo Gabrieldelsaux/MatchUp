@@ -12,15 +12,45 @@
 </head>
 
 <body>
+        <!-- ===== NAVIGATION ===== -->
     <nav>
         <div class="logo">MatchUp</div>
+
         <ul class="nav-links">
-            <li><a href="index.html">Accueil</a></li>
+            <li><a href="index.html" id="matchs2">Acceuil</a></li>
             <li><a href="index.html#games">Jeux</a></li>
-            <li><a href="matchs.html" class="active">Matchs</a></li>
         </ul>
-        <button class="nav-cta">Mon Profil</button>
+
+        <div class="nav-auth">
+            <button class="nav-cta" onclick="openAuth()">Connexion / Inscription</button>
+            <button id="logoutBtn" onclick="logout()">Déconnexion</button>
+        </div>
     </nav>
+
+    <!-- ===== AUTH MODAL ===== -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuth()">&times;</span>
+
+            <div class="auth-container">
+                <div class="auth-box">
+                    <h2>S'inscrire</h2>
+                    <input type="text" id="usernameInput" placeholder="Nom d'utilisateur">
+                    <input type="password" id="passwordInput" placeholder="Mot de passe">
+                    <button id="registerSubmit" class="btn-primary">Créer un compte</button>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="auth-box">
+                    <h2>Connexion</h2>
+                    <input type="text" id="loginUsernameInput" placeholder="Nom d'utilisateur">
+                    <input type="password" id="loginPasswordInput" placeholder="Mot de passe">
+                    <button id="loginBtn" class="btn-primary">Se connecter</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="matchs-container">
         <header class="section-header">
