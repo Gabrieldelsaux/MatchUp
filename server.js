@@ -5,10 +5,10 @@ const mysql = require('mysql2');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const connection = mysql.createConnection({
-  host: '172.29.17.241',
+  host: '172.29.19.158',
   user: 'matchUp',
   password: 'matchUp',
-  database: 'MatchUp'
+  database: 'matchUp'
 });
 
 connection.connect((err) => {

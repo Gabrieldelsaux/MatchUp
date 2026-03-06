@@ -1068,3 +1068,88 @@ nav {
     color: white;
     box-shadow: 0 0 15px rgba(255, 75, 75, 0.3);
 }
+/* ===== FOOTER ===== */
+footer {
+    background: var(--dark);
+    color: white;
+    padding: 60px 60px 30px;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+}
+
+.footer-brand {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.footer-desc {
+    color: rgba(230, 231, 228, 0.7);
+    line-height: 1.6;
+}
+
+.footer-links h4 {
+    font-family: 'Clash Display', sans-serif;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+.footer-links ul {
+    list-style: none;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: rgba(230, 231, 228, 0.7);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #E6E7E4;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 30px;
+    border-top: 1px solid rgba(230, 231, 228, 0.2);
+    color: rgba(230, 231, 228, 0.7);
+}
+.nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
