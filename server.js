@@ -5,10 +5,11 @@ const mysql = require('mysql2');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const connection = mysql.createConnection({
-  host: '172.29.19.158',
-  user: 'matchUp',
-  password: 'matchUp',
-  database: 'matchUp'
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT
 });
 
 connection.connect((err) => {
@@ -218,4 +219,10 @@ app.get('/matchs', (req, res) => {
 app.listen(3000, () => {
   let monIp = require("ip").address();
   console.log(`Server running on http://${monIp}:3000`);
+});
+
+// Gestionnaire d'erreurs global
+process.on('uncaughtException', (err) => {
+  console.error(`Une erreur non capturée s'est produite : ${err.message}`);
+  process.exit(1); // 1 signifie une sortie avec une erreur
 });
