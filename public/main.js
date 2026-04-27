@@ -408,6 +408,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // ============================================================
 // VALIDATION DU RÉSULTAT D'UN MATCH
 // ============================================================
@@ -508,6 +509,13 @@ resultSelect.addEventListener("change", () => {
     const opponentId = card.getAttribute("data-opponent-id");
     const result = resultSelect.value;
 
+=======
+resultSelect.addEventListener("change", () => {
+    const matchId = card.getAttribute("data-match-id");
+    const opponentId = card.getAttribute("data-opponent-id");
+    const result = resultSelect.value;
+
+>>>>>>> Stashed changes
     fetch("/finishMatch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -527,6 +535,9 @@ resultSelect.addEventListener("change", () => {
     .catch(err => {
         console.error("Erreur réseau lors de la modification du résultat :", err);
         alert("Erreur réseau lors de la modification du résultat.");
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     });
 });
