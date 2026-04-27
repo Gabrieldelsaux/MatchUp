@@ -1,17 +1,17 @@
 //----------------------------------------CONNEXION A LA BDD----------------------------------------------------//
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const mysql = require('mysql2');
 const path = require('path');
 const bcrypt = require('bcrypt');
-const connection = mysql.createConnection({
-  host: process.env.MYSQLHOST,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE,
-  port: process.env.MYSQLPORT
-});
 
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
 connection.connect((err) => {
   if (err) {
     console.error('Erreur de connexion à la base de données :', err);
@@ -71,7 +71,7 @@ app.post('/connexion', (req, res) => {
     if (results.length === 0) return res.status(401).json({ message: 'Identifiants invalides' });
 
     const user = results[0];
-    const match = await bcrypt.compare(password, user.password); // ← manquait !
+    const match = await bcrypt.compare(password, user.password); 
 
     if (!match) return res.status(401).json({ message: 'Identifiants invalides' });
 
@@ -104,7 +104,7 @@ app.post('/finishMatch', (req, res) => {
   const { id_match, gagnant } = req.body;
   
   connection.query(
-    'UPDATE matchs SET gagnant = CASE WHEN id_j1 = ? THEN "joueur_1" ELSE "joueur_2" END, statut = "termine" WHERE id = ?',
+    'UPDATE matchs SET gagnant = CASE WHEN id_j1 = ? THEN "joueur_1" ELSE "joueur_2" END, statut = "termine" WHERE id = ? and score_j1 IS NOT NULL AND score_j2 IS NOT NULL',
     [gagnant, id_match],
     (err, results) => {
       if (err) {
@@ -219,10 +219,4 @@ app.get('/matchs', (req, res) => {
 app.listen(3000, () => {
   let monIp = require("ip").address();
   console.log(`Server running on http://${monIp}:3000`);
-});
-
-// Gestionnaire d'erreurs global
-process.on('uncaughtException', (err) => {
-  console.error(`Une erreur non capturée s'est produite : ${err.message}`);
-  process.exit(1); // 1 signifie une sortie avec une erreur
 });

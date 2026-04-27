@@ -294,13 +294,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     if (isJ1) {
                         if (m.score_j1) {
-                            resultat      = m.score_j1 === "gagné" ? "✅ Gagné" : "❌ Perdu";
-                            resultatClass = m.score_j1 === "gagné" ? "result-win" : "result-loss";
+                            resultat      = m.score_j1 === "gagne" ? "✅ Gagné" : "❌ Perdu";
+                            resultatClass = m.score_j1 === "gagne" ? "result-win" : "result-loss";
                         }
                     } else {
                         if (m.score_j2) {
-                            resultat      = m.score_j2 === "gagné" ? "✅ Gagné" : "❌ Perdu";
-                            resultatClass = m.score_j2 === "gagné" ? "result-win" : "result-loss";
+                            resultat      = m.score_j2 === "gagne" ? "✅ Gagné" : "❌ Perdu";
+                            resultatClass = m.score_j2 === "gagne" ? "result-win" : "result-loss";
                         }
                     }
 
@@ -442,7 +442,7 @@ document.addEventListener("click", function(e) {
         if (!matchInfo) throw new Error("Match introuvable");
 
         isPlayer1Global = Number(matchInfo.id_j1) === Number(user.id);
-        var score       = resultValue === "win" ? "gagné" : "perdu";
+        var score       = resultValue === "win" ? "gagne" : "perdu";
         var scoreRoute  = isPlayer1Global ? '/changeScoreJ1' : '/changeScoreJ2';
         var scoreBody   = isPlayer1Global
             ? { score_j1: score, id_match: matchId }
