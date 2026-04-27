@@ -164,6 +164,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 var p1 = Number(m.id_j1);
                 var p2 = Number(m.id_j2);
 
+<<<<<<< Updated upstream
                 // ── Invitations reçues ────────────────────────────
                 if (p2 === userId && m.statut === "en_attente") {
                     countReceived++;
@@ -175,6 +176,69 @@ document.addEventListener("DOMContentLoaded", function() {
                                 '<button class="btn-refuse" onclick="repondreMatch(' + m.id + ',\'refuse\',' + m.id_j1 + ')">Refuser</button>' +
                             '</div>' +
                         '</div>';
+=======
+                    // si le match est en cours il va dans l'espace Matchs en cours 
+                    if (p1 === userId && m.statut === "en_cours") {
+                        countmatchs++;
+                        matchsHTML += `
+                            <div class="match-card" data-match-id="${m.id}" data-opponent-id="${p2}">
+                                <div class="match-header">
+                                    <div class="player-info">
+                                        <div class="player-avatar">${j2.substring(0, 2).toUpperCase()}</div>
+                                        <div class="player-details">
+                                            <h3 class="player-name">${j2}</h3>
+                                            <span class="game-category">${m.categorie.toUpperCase()}</span>
+                                        </div>
+                                    </div>
+                                    <div class="match-status">
+                                        <span class="status-badge ongoing">En cours</span>
+                                    </div>
+                                </div>
+                                <div class="match-result">
+                                    <label for="result-${m.id}">Résultat du match :</label>
+                                    <select id="result-${m.id}" class="result-select">
+                                        <option value="" selected disabled>-- Sélectionner --</option>
+                                        <option value="win">✅ Gagné</option>
+                                        <option value="loss">❌ Perdu</option>
+                                    </select>
+                                </div>
+                                <button class="btn-validate">Valider le résultat</button>
+                            </div>`;
+                    } 
+                    else if (p2 === userId && m.statut === "en_cours") {
+                        countmatchs++;
+                        matchsHTML += `
+                            <div class="match-card" data-match-id="${m.id}" data-opponent-id="${p1}">
+                                <div class="match-header">
+                                    <div class="player-info">
+                                        <div class="player-avatar">${j1.substring(0, 2).toUpperCase()}</div>
+                                        <div class="player-details">
+                                            <h3 class="player-name">${j1}</h3>
+                                            <span class="game-category">${m.categorie.toUpperCase()}</span>
+                                        </div>
+                                    </div>
+                                    <div class="match-status">
+                                        <span class="status-badge ongoing">En cours</span>
+                                    </div>
+                                </div>
+                                <div class="match-result">
+                                    <label for="result-${m.id}">Résultat du match :</label>
+                                    <select id="result-${m.id}" class="result-select">
+                                        <option value="" selected disabled>-- Sélectionner --</option>
+                                        <option value="win">✅ Gagné</option>
+                                        <option value="loss">❌ Perdu</option>
+                                    </select>
+                                </div>
+                                <button class="btn-validate">Valider le résultat</button>
+                            </div>`;
+                    }
+
+                });
+            
+                // Injection du contenu sans recharger la page
+                if (sentMatchs) {
+                    sentMatchs.innerHTML = countmatchs > 0 ? matchsHTML : "<p style='opacity:0.5;'>Aucun match en cours.</p>";
+>>>>>>> Stashed changes
                 }
 
                 // ── Invitations envoyées ──────────────────────────
@@ -343,6 +407,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
+<<<<<<< Updated upstream
 // ============================================================
 // VALIDATION DU RÉSULTAT D'UN MATCH
 // ============================================================
@@ -437,5 +502,31 @@ document.addEventListener("click", function(e) {
         alert("Erreur : " + err.message);
         e.target.disabled  = false;
         e.target.innerText = "Valider le résultat";
+=======
+resultSelect.addEventListener("change", () => {
+    const matchId = card.getAttribute("data-match-id");
+    const opponentId = card.getAttribute("data-opponent-id");
+    const result = resultSelect.value;
+
+    fetch("/finishMatch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            id_match: matchId,
+            result: result
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert("Erreur : " + (data.message || "Erreur lors de la modification du résultat"));
+        }
+    })
+    .catch(err => {
+        console.error("Erreur réseau lors de la modification du résultat :", err);
+        alert("Erreur réseau lors de la modification du résultat.");
+>>>>>>> Stashed changes
     });
 });
