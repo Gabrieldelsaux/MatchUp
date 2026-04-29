@@ -216,7 +216,7 @@ app.get('/matchs', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'matchs.html'));
 });
 
-app.listen(3000, () => {
-  let monIp = require("ip").address();
-  console.log(`Server running on http://${monIp}:3000`);
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log('Server running on port ' + PORT);
 });
